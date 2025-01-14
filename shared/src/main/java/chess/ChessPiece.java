@@ -52,13 +52,11 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> validMoves = new ArrayList<ChessMove>();
-        boolean blockage = false;
-        int i = 0;
-        int j = 0;
+
         switch (this.type) {
-            case KING: // now add logic for the edge of the board
-                for (i = -1; i <= 1; i++) {
-                    for (j = -1; j <= 1; j++) {
+            case KING:
+                for (int i = -1; i <= 1; i++) {
+                    for (int j = -1; j <= 1; j++) {
                         if (!(i == 0 && j == 0) && (myPosition.getRow() + i <= 8 && myPosition.getRow() + i >= 1) && (myPosition.getColumn() + j <= 8 && myPosition.getColumn() + j >= 1)) {
                             if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)) == null) {
                                 validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j), null));
@@ -77,6 +75,26 @@ public class ChessPiece {
                 validMoves.addAll(bishopMoves(board, myPosition));
                 break;
             case KNIGHT:
+                int[][] moves = new int[][] {
+                        { 1,  2},
+                        { 2,  1},
+                        { 1, -2},
+                        {-2,  1},
+                        {-1,  2},
+                        { 2, -1},
+                        {-1, -2},
+                        {-2, -1}
+                };
+                for (int[] i : moves) {
+                    if (myPosition.getRow()    + i[0] <= 8 && myPosition.getRow()    + i[0] >= 1 &&
+                        myPosition.getColumn() + i[1] <= 8 && myPosition.getColumn() + i[1] >= 1) {
+                        if (board.getPiece(new ChessPosition(myPosition.getRow() + i[0], myPosition.getColumn() + i[1])) == null) {
+                            validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i[0], myPosition.getColumn() + i[1]), null));
+                        } else if (board.getPiece(new ChessPosition(myPosition.getRow() + i[0], myPosition.getColumn() + i[1])).getTeamColor() != this.getTeamColor()) {
+                            validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i[0], myPosition.getColumn() + i[1]), null));
+                        }
+                    }
+                }
                 break;
             case ROOK:
                 validMoves.addAll(rookMoves(board, myPosition));
@@ -88,6 +106,7 @@ public class ChessPiece {
         return validMoves;
     }
 
+    // this code has been moved to a method so it could be reused with queen
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> validBishopMoves = new ArrayList<ChessMove>();
 
@@ -180,6 +199,7 @@ public class ChessPiece {
         return validBishopMoves;
     }
 
+    // this code has been moved to a method so it can be reused with queen
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> validRookMoves = new ArrayList<ChessMove>();
 
