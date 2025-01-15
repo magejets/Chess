@@ -324,4 +324,12 @@ public class ChessPiece {
 
         return validRookMoves;
     }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                '}';
+    }
 }

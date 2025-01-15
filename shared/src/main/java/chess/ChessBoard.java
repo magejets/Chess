@@ -130,4 +130,18 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
+
+    @Override
+    public String toString() {
+        String returnVal = "Board:\n  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n";
+        for (int i = 7; i >= 0; i--) {
+            returnVal += (i + 1);
+            for (int j = 0; j < 8; j++) {
+                returnVal += " | ";
+                returnVal += this.board[i][j];
+            }
+            returnVal += " |\n";
+        }
+        return returnVal;
+    }
 }
