@@ -1,5 +1,6 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -100,12 +101,51 @@ public class ChessPiece {
                 validMoves.addAll(rookMoves(board, myPosition));
                 break;
             case PAWN:
+                validMoves.addAll(pawnMoves(board, myPosition));
                 break;
         }
 
         return validMoves;
     }
 
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        ArrayList<ChessMove> validPawnMoves = new ArrayList<ChessMove>();
+        int direction = board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE ? 1 : -1;
+        if (myPosition.getRow() == (direction == 1 ? 2 : 7)) { // initial move
+            if (board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) {
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), null));
+                if (board.getPiece(new ChessPosition(myPosition.getRow() + direction * 2, myPosition.getColumn())) == null) {
+                    validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction * 2, myPosition.getColumn()), null));
+                }
+            }
+
+        } else if (myPosition.getRow() == (direction == 1 ? 7 : 2)) { // promotion moving straight
+            if (board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) {
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), PieceType.QUEEN));
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), PieceType.BISHOP));
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), PieceType.ROOK));
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), PieceType.KNIGHT));
+            }
+        } else if (board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) { // non initial, non promotion moves
+            validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), null));
+        }
+        for (int j = -1; j <= 1; j += 2) { // scan to both the left and right for capture logic
+            if ((myPosition.getColumn() + j <= 8) && (myPosition.getColumn() + j >= 1)) {
+                ChessPiece cornerPiece = board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j));
+                if ((cornerPiece != null) && (cornerPiece.getTeamColor() != board.getPiece(myPosition).getTeamColor())) { // needs to be checked for promotion
+                    if (myPosition.getRow() == (direction == 1 ? 7 : 2)){
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), PieceType.QUEEN));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), PieceType.BISHOP));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), PieceType.ROOK));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), PieceType.KNIGHT));
+                    } else {
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), null));
+                    }
+                }
+            }
+        }
+        return validPawnMoves;
+    }
     // this code has been moved to a method so it could be reused with queen
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> validBishopMoves = new ArrayList<ChessMove>();
