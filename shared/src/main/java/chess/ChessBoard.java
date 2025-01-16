@@ -133,15 +133,15 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        String returnVal = "Board:\n  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n";
+        StringBuilder returnVal = new StringBuilder("Board:\n  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n");
         for (int i = 7; i >= 0; i--) {
-            returnVal += (i + 1);
+            returnVal.append(i + 1);
             for (int j = 0; j < 8; j++) {
-                returnVal += " | ";
-                returnVal += this.board[i][j];
+                returnVal.append(" | ");
+                returnVal.append(this.board[i][j]);
             }
-            returnVal += " |\n";
+            returnVal.append(" |\n");
         }
-        return returnVal;
+        return returnVal.toString();
     }
 }
