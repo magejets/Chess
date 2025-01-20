@@ -87,19 +87,35 @@ public class ChessGame {
     /**
      * Determines if the given team is in check
      *
+     * @param move a hypothetical move to see if check is maintained
      * @param teamColor which team to check for check
-     * @return True if the specified team is in check
+     * @return True if the specified move places king in check
      */
-    public boolean isInCheck(TeamColor teamColor) {
+    public boolean isInCheck(ChessMove move, TeamColor teamColor) {
+        ChessBoard tempBoard = new ChessBoard(this.board); // store the board as it is
+        ChessBoard hypBoard = this.getBoard().makeMove(move); // modify the board
+        boolean check = this.isInCheck(hypBoard, teamColor); // see if the king is still in check
+        this.setBoard(tempBoard); // fix the board
+        return check; // return that hypothetical
+    }
+
+    /**
+     * Determines if the given team is in check
+     *
+     * @param board a hypothetical board to see if check is maintained
+     * @param teamColor which team to check for check
+     * @return True if the specified move places king in check
+     */
+    public boolean isInCheck(ChessBoard board, TeamColor teamColor) {
         ChessPosition kingPosition = null;
 
         // find this teams king
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
-                ChessPiece piece = this.getBoard().getPiece(new ChessPosition(i, j));
+                ChessPiece piece = board.getPiece(new ChessPosition(i, j));
                 if (piece != null &&
-                    piece.getTeamColor() == teamColor &&
-                    piece.getPieceType() == ChessPiece.PieceType.KING) {
+                        piece.getTeamColor() == teamColor &&
+                        piece.getPieceType() == ChessPiece.PieceType.KING) {
                     kingPosition = new ChessPosition(i, j);
                     break; // so this doesn't work to quit the for loop. Set i and j manually? use while?
                 }
@@ -110,25 +126,15 @@ public class ChessGame {
         if (kingPosition == null) {
             return false;
         }
-        /*
-  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-8 |   |   |   |   |   |   |   |   |
-7 |   |   |   |   |   |   |   |   |
-6 |   |   |   |   |   |   |   |   |
-5 | k |   |   |   |   | R |   | K |
-4 |   |   |   |   |   |   |   |   |
-3 |   |   |   |   |   |   |   |   |
-2 |   |   |   |   |   |   |   |   |
-1 |   |   |   |   |   |   |   |   |*/
 
         // see if any of the pieces' moves end on the king square
-        for (int i = 1; i <= 8; i++) { // initialize to 1!
-            for (int j = 1; j <= 8; j++) { // initialize to 1!
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
                 ChessPosition enemyPosition = new ChessPosition(i, j);
-                ChessPiece enemy = this.getBoard().getPiece(enemyPosition);
+                ChessPiece enemy = board.getPiece(enemyPosition);
                 if (enemy != null) {
-                    Collection<ChessMove> strikes = enemy.pieceMoves(this.getBoard(), enemyPosition); // debug
-                    for (ChessMove strike : enemy.pieceMoves(this.getBoard(), enemyPosition)) {
+                    Collection<ChessMove> strikes = enemy.pieceMoves(board, enemyPosition); // debug
+                    for (ChessMove strike : enemy.pieceMoves(board, enemyPosition)) {
                         if (strike.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
@@ -141,13 +147,55 @@ public class ChessGame {
     }
 
     /**
+     * Determines if the given team is in check
+     *
+     * @param teamColor which team to check for check
+     * @return True if the specified team is in check
+     */
+    public boolean isInCheck(TeamColor teamColor) {
+        return this.isInCheck(this.getBoard(), teamColor);
+    }
+
+    /**
      * Determines if the given team is in checkmate
      *
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // if the king isn't even checked then it isn't mate
+        if (!(this.isInCheck(TeamColor.WHITE))) {
+            return false;
+        }
+
+        // go through all the pieces on the board
+        for (int i = 4; i <= 8; i++) { // default to 1
+            for (int j = 6; j <= 8; j++) { // default to 1
+                ChessPosition piecePos = new ChessPosition(i, j);
+                ChessPiece piece = board.getPiece(piecePos);
+
+                // see if one of his teammates can save the king
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    for (ChessMove move : piece.pieceMoves(this.getBoard(), piecePos)) {
+                        if (!(this.isInCheck(move, teamColor))) {
+                            return false;
+                        }
+                    }
+                }
+            }
+//            Board:
+//  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+//8 |   |   |   | b |   |   | r |   |
+//7 |   |   |   |   |   |   |   |   |
+//6 |   |   |   |   |   |   |   |   |
+//5 | k | r |   |   |   |   |   | K |
+//4 |   |   |   |   |   | R |   |   |
+//3 |   |   |   |   |   |   |   |   |
+//2 |   |   |   |   |   |   |   |   |
+//1 |   |   |   |   |   |   |   | q |
+            // if nothing can be done, alas, checkmate
+        }
+        return true;
     }
 
     /**

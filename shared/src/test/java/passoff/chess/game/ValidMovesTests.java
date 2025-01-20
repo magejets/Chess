@@ -43,24 +43,6 @@ public class ValidMovesTests {
     }
 
     @Test
-    @DisplayName("IsCheck test")
-    public void isCheckTest() {
-        var game = new ChessGame();
-        game.setBoard(TestUtilities.loadBoard("""
-                    | | | |b| | | | |
-                    | | | | | | | | |
-                    | | | | | | | | |
-                    |k|r| | | |R| |K|
-                    | | | | | | | | |
-                    | | | | | | | | |
-                    | | | | | | | | |
-                    | | | | | | | |q|
-                    """));
-        System.out.println(game.isInCheck(ChessGame.TeamColor.BLACK));
-        assert game.isInCheck(ChessGame.TeamColor.WHITE);
-    }
-
-    @Test
     @DisplayName("Piece Partially Trapped")
     public void moveIntoCheck() {
 

@@ -26,6 +26,15 @@ public class ChessBoard {
         
     }
 
+    public ChessBoard(ChessBoard newBoard) { // duplicator constructor
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                this.board[i][j] = newBoard.board[i][j];
+            }
+        }
+
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -119,12 +128,15 @@ public class ChessBoard {
     // add method make move. Won't check for legality but will be used by ChessGame.makeMove; this'll take a ChessMove
     public ChessBoard makeMove(ChessMove move){ // add exceptions
         // check that this is in fact a legal move for this piece (disregarding king danger)
-        if (this.getPiece(move.getStartPosition()).pieceMoves(this, move.getStartPosition()).contains(move)) {
-            // put the piece in the end position
-            this.board[move.getEndPosition().getRow()][move.getEndPosition().getColumn()]
-                    = this.board[move.getStartPosition().getRow()][move.getStartPosition().getColumn()];
-            // remove the piece from the start position
-            this.board[move.getStartPosition().getRow()][move.getStartPosition().getColumn()] = ' ';
+        if (this.getPiece(move.getStartPosition()) != null){
+            if (this.getPiece(move.getStartPosition()).pieceMoves(
+            this, move.getStartPosition()).contains(move)) {
+                // put the piece in the end position
+                this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1]
+                    = this.board[move.getStartPosition().getRow() - 1][move.getStartPosition().getColumn() - 1];
+                // remove the piece from the start position
+                this.board[move.getStartPosition().getRow() - 1][move.getStartPosition().getColumn() - 1] = ' ';
+            }
         }
 
         return this;
