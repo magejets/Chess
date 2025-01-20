@@ -116,6 +116,20 @@ public class ChessBoard {
         };
     }
 
+    // add method make move. Won't check for legality but will be used by ChessGame.makeMove; this'll take a ChessMove
+    public ChessBoard makeMove(ChessMove move){ // add exceptions
+        // check that this is in fact a legal move for this piece (disregarding king danger)
+        if (this.getPiece(move.getStartPosition()).pieceMoves(this, move.getStartPosition()).contains(move)) {
+            // put the piece in the end position
+            this.board[move.getEndPosition().getRow()][move.getEndPosition().getColumn()]
+                    = this.board[move.getStartPosition().getRow()][move.getStartPosition().getColumn()];
+            // remove the piece from the start position
+            this.board[move.getStartPosition().getRow()][move.getStartPosition().getColumn()] = ' ';
+        }
+
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

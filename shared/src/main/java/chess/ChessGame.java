@@ -9,16 +9,18 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-
+    private TeamColor turn;
+    private ChessBoard board = new ChessBoard();
     public ChessGame() {
-
+        turn = TeamColor.WHITE;
+        board.resetBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return this.turn;
     }
 
     /**
@@ -27,7 +29,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        this.turn = team;
     }
 
     /**
@@ -46,7 +48,23 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        //throw new RuntimeException("Not implemented");
+        Collection<ChessMove> validMoves = board.getPiece(startPosition).pieceMoves(this.getBoard(), startPosition);
+
+        // logic for check, checkmate, and stalemate
+        // check for check
+            // if the king is in check
+                // if this piece is the king
+                    // ? implement method that takes a board or a move to determine check?
+                    // the only valid moves are ones that get it out of check
+                // if this piece is not the king
+                    // there are no valid moves
+        // check for checkmate
+            // no valid moves. Game over. I think. Maybe this and stalemate aren't necessary
+        // check for stalemate
+            // game over
+
+        return validMoves;
     }
 
     /**
@@ -56,7 +74,14 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+
+        if (this.validMoves(move.getStartPosition()).contains(move)) {
+            this.setBoard(this.getBoard().makeMove(move));
+        } else {
+            throw new InvalidMoveException("Invalid Move");
+        }
+        // at the end switch the turn
+        this.setTeamTurn(this.getTeamTurn() == TeamColor.WHITE ? TeamColor.BLACK : TeamColor.WHITE);
     }
 
     /**
@@ -66,7 +91,53 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = null;
+
+        // find this teams king
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPiece piece = this.getBoard().getPiece(new ChessPosition(i, j));
+                if (piece != null &&
+                    piece.getTeamColor() == teamColor &&
+                    piece.getPieceType() == ChessPiece.PieceType.KING) {
+                    kingPosition = new ChessPosition(i, j);
+                    break; // so this doesn't work to quit the for loop. Set i and j manually? use while?
+                }
+            }
+        }
+
+        // make sure there was actually a king
+        if (kingPosition == null) {
+            return false;
+        }
+        /*
+  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+8 |   |   |   |   |   |   |   |   |
+7 |   |   |   |   |   |   |   |   |
+6 |   |   |   |   |   |   |   |   |
+5 | k |   |   |   |   | R |   | K |
+4 |   |   |   |   |   |   |   |   |
+3 |   |   |   |   |   |   |   |   |
+2 |   |   |   |   |   |   |   |   |
+1 |   |   |   |   |   |   |   |   |*/
+
+        // see if any of the pieces' moves end on the king square
+        for (int i = 1; i <= 8; i++) { // initialize to 1!
+            for (int j = 1; j <= 8; j++) { // initialize to 1!
+                ChessPosition enemyPosition = new ChessPosition(i, j);
+                ChessPiece enemy = this.getBoard().getPiece(enemyPosition);
+                if (enemy != null) {
+                    Collection<ChessMove> strikes = enemy.pieceMoves(this.getBoard(), enemyPosition); // debug
+                    for (ChessMove strike : enemy.pieceMoves(this.getBoard(), enemyPosition)) {
+                        if (strike.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -96,7 +167,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -105,6 +176,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return this.board;
     }
 }
