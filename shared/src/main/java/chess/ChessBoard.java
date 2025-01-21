@@ -132,8 +132,14 @@ public class ChessBoard {
             if (this.getPiece(move.getStartPosition()).pieceMoves(
             this, move.getStartPosition()).contains(move)) {
                 // put the piece in the end position
-                this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1]
-                    = this.board[move.getStartPosition().getRow() - 1][move.getStartPosition().getColumn() - 1];
+                if (move.getPromotionPiece() == null) {
+                    this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1]
+                            = this.board[move.getStartPosition().getRow() - 1][move.getStartPosition().getColumn() - 1];
+                } else {
+                    this.addPiece(move.getEndPosition(),
+                            new ChessPiece(this.getPiece(move.getStartPosition()).getTeamColor() ,
+                                    move.getPromotionPiece()));
+                }
                 // remove the piece from the start position
                 this.board[move.getStartPosition().getRow() - 1][move.getStartPosition().getColumn() - 1] = ' ';
             }
