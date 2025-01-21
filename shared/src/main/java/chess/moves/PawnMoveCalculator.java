@@ -27,12 +27,15 @@ public class PawnMoveCalculator {
                 validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), ChessPiece.PieceType.ROOK));
                 validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), ChessPiece.PieceType.KNIGHT));
             }
-        } else if (board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) { // non initial, non promotion moves
+        } else if ((myPosition.getRow() + direction < 8) && (myPosition.getRow() + direction > 1) &&
+                board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) { // non initial, non promotion moves
             validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), null));
         }
         for (int j = -1; j <= 1; j += 2) { // scan to both the left and right for capture logic
-            if ((myPosition.getColumn() + j <= 8) && (myPosition.getColumn() + j >= 1)) {
+            if ((myPosition.getColumn() + j <= 8) && (myPosition.getColumn() + j >= 1) &&
+                (myPosition.getRow() != (direction == 1 ? 8 : 1))) {
                 ChessPiece cornerPiece = board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j));
+
                 if ((cornerPiece != null) && (cornerPiece.getTeamColor() != board.getPiece(myPosition).getTeamColor())) { // needs to be checked for promotion
                     if (myPosition.getRow() == (direction == 1 ? 7 : 2)){
                         validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), ChessPiece.PieceType.QUEEN));

@@ -4,6 +4,6 @@
 - make move method ChessBoard $$
 - write a test for IsCheck (debug) $$
 - write IsCheckMate and tests $$
-  - ? make IsCheck that takes a hypothetical board or maybe a move to check if still in check after said move $$
-- write isStalemate
+  - make IsCheck that takes a hypothetical board or maybe a move to check if still in check after said move $$
+- write isStalemate $$
 - write validMoves method

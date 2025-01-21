@@ -1,6 +1,9 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -48,21 +51,22 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        //throw new RuntimeException("Not implemented");
-        Collection<ChessMove> validMoves = board.getPiece(startPosition).pieceMoves(this.getBoard(), startPosition);
+        Collection<ChessMove> validMoves = this.getBoard().getPiece(startPosition).pieceMoves(this.getBoard(), startPosition);
+        // if no piece, no moves. Also if stale or checkmate no moves
+        if ((this.getBoard().getPiece(startPosition) == null) ||
+            this.isInStalemate(this.getBoard().getPiece(startPosition).getTeamColor()) ||
+            this.isInCheckmate(this.getBoard().getPiece(startPosition).getTeamColor())) {
+            return null;
+        }
+        // loop through all the moves given us by the pieceMove function, remove if illegal
+        Iterator<ChessMove> moveIterator = validMoves.iterator();
+        while (moveIterator.hasNext()) {
+            ChessMove move = moveIterator.next();
+            if (isInCheck(move, this.getBoard().getPiece(startPosition).getTeamColor())) {
+                moveIterator.remove();
+            }
+        }
 
-        // logic for check, checkmate, and stalemate
-        // check for check
-            // if the king is in check
-                // if this piece is the king
-                    // ? implement method that takes a board or a move to determine check?
-                    // the only valid moves are ones that get it out of check
-                // if this piece is not the king
-                    // there are no valid moves
-        // check for checkmate
-            // no valid moves. Game over. I think. Maybe this and stalemate aren't necessary
-        // check for stalemate
-            // game over
 
         return validMoves;
     }
@@ -167,7 +171,7 @@ public class ChessGame {
         for (int i = 1; i <= 8; i++) { // default to 1
             for (int j = 1; j <= 8; j++) { // default to 1
                 ChessPosition piecePos = new ChessPosition(i, j);
-                ChessPiece piece = board.getPiece(piecePos);
+                ChessPiece piece = board.getPiece(piecePos); // this.getBoard
 
                 // see if one of his teammates can save the king
                 if (piece != null && piece.getTeamColor() == teamColor) {
