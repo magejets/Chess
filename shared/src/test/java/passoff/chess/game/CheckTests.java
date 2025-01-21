@@ -77,4 +77,22 @@ public class CheckTests {
 
         assert !(game.isInCheckmate(ChessGame.TeamColor.WHITE));
     }
+
+    @Test
+    @DisplayName("IsStalemate test")
+    public void isStalemate() {
+        var game = new ChessGame();
+        game.setBoard(TestUtilities.loadBoard("""
+                    | | | |b| | |r| |
+                    | | | | | | | | |
+                    | | | | | | | | |
+                    |k|p| | | | | | |
+                    | | | | | | | | |
+                    |q| | | | | | | |
+                    | | | | | | | | |
+                    | | | | | | | |K|
+                    """));
+
+        assert !game.isInStalemate(ChessGame.TeamColor.WHITE);
+    }
 }

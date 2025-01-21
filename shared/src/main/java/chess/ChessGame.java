@@ -159,18 +159,13 @@ public class ChessGame {
     /**
      * Determines if the given team is in checkmate
      *
-     * @param teamColor which team to check for checkmate
-     * @return True if the specified team is in checkmate
+     * @param teamColor which team to check
+     * @return True if the specified team's king can safely move
      */
-    public boolean isInCheckmate(TeamColor teamColor) {
-        // if the king isn't even checked then it isn't mate
-        if (!(this.isInCheck(TeamColor.WHITE))) {
-            return false;
-        }
-
+    private boolean noEscape(TeamColor teamColor) {
         // go through all the pieces on the board
-        for (int i = 4; i <= 8; i++) { // default to 1
-            for (int j = 6; j <= 8; j++) { // default to 1
+        for (int i = 1; i <= 8; i++) { // default to 1
+            for (int j = 1; j <= 8; j++) { // default to 1
                 ChessPosition piecePos = new ChessPosition(i, j);
                 ChessPiece piece = board.getPiece(piecePos);
 
@@ -183,19 +178,21 @@ public class ChessGame {
                     }
                 }
             }
-//            Board:
-//  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-//8 |   |   |   | b |   |   | r |   |
-//7 |   |   |   |   |   |   |   |   |
-//6 |   |   |   |   |   |   |   |   |
-//5 | k | r |   |   |   |   |   | K |
-//4 |   |   |   |   |   | R |   |   |
-//3 |   |   |   |   |   |   |   |   |
-//2 |   |   |   |   |   |   |   |   |
-//1 |   |   |   |   |   |   |   | q |
-            // if nothing can be done, alas, checkmate
         }
+        // if nothing can be done, alas, checkmate
         return true;
+    }
+
+    /**
+     * Determines if the given team is in checkmate
+     *
+     * @param teamColor which team to check for checkmate
+     * @return True if the specified team is in checkmate
+     */
+    public boolean isInCheckmate(TeamColor teamColor) {
+        // if the king is in check and can't move then checkmate
+        return this.isInCheck(teamColor) && this.noEscape(teamColor);
+
     }
 
     /**
@@ -206,7 +203,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // if the king isn't in check and can't move then stalemate
+        return !(this.isInCheck(teamColor)) && this.noEscape(teamColor);
     }
 
     /**
