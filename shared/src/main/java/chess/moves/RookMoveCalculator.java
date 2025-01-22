@@ -25,7 +25,8 @@ public class RookMoveCalculator {
             if (myPosition.getRow() + i <= 8) {
                 if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn())) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn())).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn())).getTeamColor() ==
+                            board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }
@@ -44,7 +45,8 @@ public class RookMoveCalculator {
             if (myPosition.getRow() + i >= 1) {
                 if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn())) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn())).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn())).getTeamColor() ==
+                            board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }
@@ -63,7 +65,8 @@ public class RookMoveCalculator {
             if (myPosition.getColumn() + j <= 8) {
                 if (board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + j)) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + j)).getTeamColor() ==
+                            board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }
@@ -82,7 +85,8 @@ public class RookMoveCalculator {
             if (myPosition.getColumn() + j >= 1) {
                 if (board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + j)) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow(), myPosition.getColumn() + j)).getTeamColor() ==
+                            board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }

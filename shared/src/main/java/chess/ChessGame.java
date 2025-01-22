@@ -230,4 +230,10 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return this.board;
     }
+
+    @Override
+    public String toString() {
+        return turn + "'s Turn\n\n" +
+                board;
+    }
 }

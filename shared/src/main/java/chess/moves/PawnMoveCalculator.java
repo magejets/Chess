@@ -16,16 +16,21 @@ public class PawnMoveCalculator {
             if (board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) {
                 validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), null));
                 if (board.getPiece(new ChessPosition(myPosition.getRow() + direction * 2, myPosition.getColumn())) == null) {
-                    validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction * 2, myPosition.getColumn()), null));
+                    validPawnMoves.add(new ChessMove(myPosition,
+                            new ChessPosition(myPosition.getRow() + direction * 2, myPosition.getColumn()), null));
                 }
             }
 
         } else if (myPosition.getRow() == (direction == 1 ? 7 : 2)) { // promotion moving straight
             if (board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) {
-                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), ChessPiece.PieceType.QUEEN));
-                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), ChessPiece.PieceType.BISHOP));
-                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), ChessPiece.PieceType.ROOK));
-                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()), ChessPiece.PieceType.KNIGHT));
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()),
+                        ChessPiece.PieceType.QUEEN));
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()),
+                        ChessPiece.PieceType.BISHOP));
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()),
+                        ChessPiece.PieceType.ROOK));
+                validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn()),
+                        ChessPiece.PieceType.KNIGHT));
             }
         } else if ((myPosition.getRow() + direction < 8) && (myPosition.getRow() + direction > 1) &&
                 board.getPiece(new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn())) == null) { // non initial, non promotion moves
@@ -38,12 +43,17 @@ public class PawnMoveCalculator {
 
                 if ((cornerPiece != null) && (cornerPiece.getTeamColor() != board.getPiece(myPosition).getTeamColor())) { // needs to be checked for promotion
                     if (myPosition.getRow() == (direction == 1 ? 7 : 2)){
-                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), ChessPiece.PieceType.QUEEN));
-                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), ChessPiece.PieceType.BISHOP));
-                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), ChessPiece.PieceType.ROOK));
-                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), ChessPiece.PieceType.KNIGHT));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction,
+                                myPosition.getColumn() + j), ChessPiece.PieceType.QUEEN));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction,
+                                myPosition.getColumn() + j), ChessPiece.PieceType.BISHOP));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction,
+                                myPosition.getColumn() + j), ChessPiece.PieceType.ROOK));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction,
+                                myPosition.getColumn() + j), ChessPiece.PieceType.KNIGHT));
                     } else {
-                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + j), null));
+                        validPawnMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + direction,
+                                myPosition.getColumn() + j), null));
                     }
                 }
             }

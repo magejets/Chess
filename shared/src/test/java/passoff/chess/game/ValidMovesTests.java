@@ -90,18 +90,6 @@ public class ValidMovesTests {
     @Test
     @DisplayName("Pieces Cannot Eliminate Check")
     public void kingInDanger() {
-//        java.lang.ArrayIndexOutOfBoundsException: Index -1 out of bounds for length 8
-//
-//        at chess.ChessBoard.getPiece(ChessBoard.java:91)
-//        at chess.moves.PawnMoveCalculator.pieceMoves(PawnMoveCalculator.java:30)
-//        at chess.ChessPiece.pieceMoves(ChessPiece.java:82)
-//        at chess.ChessGame.isInCheck(ChessGame.java:139)
-//        at chess.ChessGame.isInCheck(ChessGame.java:100)
-//        at chess.ChessGame.noEscape(ChessGame.java:178)
-//        at chess.ChessGame.isInCheckmate(ChessGame.java:197)
-//        at chess.ChessGame.validMoves(ChessGame.java:57)
-//        at passoff.chess.game.ValidMovesTests.assertMoves(ValidMovesTests.java:167)
-//        at passoff.chess.game.ValidMovesTests.kingInDanger(ValidMovesTests.java:118)
         var game = new ChessGame();
         game.setTeamTurn(ChessGame.TeamColor.BLACK);
         game.setBoard(TestUtilities.loadBoard("""

@@ -23,14 +23,17 @@ public class BishopMoveCalculator {
             j++;
             boolean capture = true;
             if ((myPosition.getRow() + i <= 8) && (myPosition.getColumn() + j <= 8)) {
-                if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)) != null) {
+                if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                        myPosition.getColumn() + j)) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                    myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }
                 if (capture) {
-                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j), null));
+                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i,
+                            myPosition.getColumn() + j), null));
                 }
             } else {
                 blockage = true;
@@ -44,14 +47,17 @@ public class BishopMoveCalculator {
             j++;
             boolean capture = true;
             if ((myPosition.getRow() + i >= 1) && (myPosition.getColumn() + j <= 8)) {
-                if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)) != null) {
+                if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                        myPosition.getColumn() + j)) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                        myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }
                 if (capture) {
-                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j), null));
+                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i,
+                            myPosition.getColumn() + j), null));
                 }
             } else {
                 blockage = true;
@@ -65,14 +71,17 @@ public class BishopMoveCalculator {
             j--;
             boolean capture = true;
             if ((myPosition.getRow() + i <= 8) && (myPosition.getColumn() + j >= 1)) {
-                if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)) != null) {
+                if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                        myPosition.getColumn() + j)) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                        myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }
                 if (capture) {
-                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j), null));
+                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i,
+                            myPosition.getColumn() + j), null));
                 }
             } else {
                 blockage = true;
@@ -86,14 +95,17 @@ public class BishopMoveCalculator {
             j--;
             boolean capture = true;
             if ((myPosition.getRow() + i >= 1) && (myPosition.getColumn() + j >= 1)) {
-                if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)) != null) {
+                if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                        myPosition.getColumn() + j)) != null) {
                     blockage = true;
-                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
+                    if (board.getPiece(new ChessPosition(myPosition.getRow() + i,
+                        myPosition.getColumn() + j)).getTeamColor() == board.getPiece(myPosition).getTeamColor()) {
                         capture = false;
                     }
                 }
                 if (capture) {
-                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i, myPosition.getColumn() + j), null));
+                    validBishopMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + i,
+                            myPosition.getColumn() + j), null));
                 }
             } else {
                 blockage = true;
