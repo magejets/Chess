@@ -1,10 +1,9 @@
-package passoff.chess.extracredit;
+package passoff.chess;
 
 import chess.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import passoff.chess.TestUtilities;
 
 /**
  * Tests if the ChessGame implementation can handle Castling moves

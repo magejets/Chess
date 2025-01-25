@@ -1,6 +1,8 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -21,9 +23,17 @@ public class ChessBoard {
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
     };
+    // for castling functionality
+    public Map<String, Boolean> piecesMoved = new HashMap<String, Boolean>();
+
 
     public ChessBoard() {
-        
+        piecesMoved.put("K",   false);
+        piecesMoved.put("k",   false);
+        piecesMoved.put("r-l", false);
+        piecesMoved.put("r-r", false);
+        piecesMoved.put("R-l", false);
+        piecesMoved.put("R-r", false);
     }
 
     public ChessBoard(ChessBoard newBoard) { // duplicator constructor
@@ -32,7 +42,12 @@ public class ChessBoard {
                 this.board[i][j] = newBoard.board[i][j];
             }
         }
-
+        piecesMoved.put("K",   newBoard.piecesMoved.get("K"));
+        piecesMoved.put("k",   newBoard.piecesMoved.get("k"));
+        piecesMoved.put("r-l", newBoard.piecesMoved.get("r-l"));
+        piecesMoved.put("r-r", newBoard.piecesMoved.get("r-r"));
+        piecesMoved.put("R-l", newBoard.piecesMoved.get("R-l"));
+        piecesMoved.put("R-r", newBoard.piecesMoved.get("R-r"));
     }
 
     /**
@@ -123,13 +138,38 @@ public class ChessBoard {
                 {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}
 
         };
+        piecesMoved.put("K",   false);
+        piecesMoved.put("k",   false);
+        piecesMoved.put("r-l", false);
+        piecesMoved.put("r-r", false);
+        piecesMoved.put("R-l", false);
+        piecesMoved.put("R-r", false);
     }
 
     // add method make move. Won't check for legality but will be used by ChessGame.makeMove; this'll take a ChessMove
     public ChessBoard makeMove(ChessMove move){ // add exceptions
         // check that this is in fact a legal move for this piece (disregarding king danger)
         if (this.getPiece(move.getStartPosition()) != null){
-            if (this.getPiece(move.getStartPosition()).pieceMoves(
+            // see if it's castling. Hopefully legality was already checked!!!
+            if (this.getPiece(move.getStartPosition()).getPieceType() == ChessPiece.PieceType.KING &&
+            Math.abs(move.getStartPosition().getColumn() - move.getEndPosition().getColumn()) > 1) {
+                if (move.getStartPosition().getColumn() - move.getEndPosition().getColumn() > 0) { // queen side
+                    this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1] =
+                            this.getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.WHITE ? 'K' : 'k';
+                    this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn()] =
+                            this.getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.WHITE ? 'R' : 'r';
+                    this.board[move.getEndPosition().getRow() - 1][0] = ' ';
+                    this.board[move.getEndPosition().getRow() - 1][4] = ' ';
+                }
+                if (move.getStartPosition().getColumn() - move.getEndPosition().getColumn() < 0) { // king side
+                    this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1] =
+                            this.getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.WHITE ? 'K' : 'k';
+                    this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 2] =
+                            this.getPiece(move.getStartPosition()).getTeamColor() == ChessGame.TeamColor.WHITE ? 'R' : 'r';
+                    this.board[move.getEndPosition().getRow() - 1][7] = ' ';
+                    this.board[move.getEndPosition().getRow() - 1][4] = ' ';
+                }
+            } else if (this.getPiece(move.getStartPosition()).pieceMoves(
             this, move.getStartPosition()).contains(move)) {
                 // put the piece in the end position
                 if (move.getPromotionPiece() == null) {
