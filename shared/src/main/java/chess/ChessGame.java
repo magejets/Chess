@@ -56,14 +56,8 @@ public class ChessGame {
             this.isInCheckmate(this.getBoard().getPiece(startPosition).getTeamColor())) {
             return null;
         }
-        // loop through all the moves given us by the pieceMove function, remove if illegal
-        Iterator<ChessMove> moveIterator = validMoves.iterator();
-        while (moveIterator.hasNext()) {
-            ChessMove move = moveIterator.next();
-            if (isInCheck(move, this.getBoard().getPiece(startPosition).getTeamColor())) {
-                moveIterator.remove();
-            }
-        }
+        // remove all the illegal moves given us by the pieceMove function
+        validMoves.removeIf(move -> isInCheck(move, this.getBoard().getPiece(startPosition).getTeamColor()));
 
         validMoves.addAll(castling(startPosition));
 
@@ -71,11 +65,11 @@ public class ChessGame {
     }
 
     /**
-     * Gets a valid moves for a piece at the given location
+     * Looks at valid castling possibilities
      *
      * @param startPosition the piece to see if is king and can castle
-     * @return Set of valid moves for requested piece, or null if no piece at
-     * startPosition
+     * @return Set of valid castling moves for requested piece, if that
+     * piece is a king
      */
     public Collection<ChessMove> castling(ChessPosition startPosition) {
         ArrayList<ChessMove> castles = new ArrayList<ChessMove>();
@@ -147,7 +141,8 @@ public class ChessGame {
             if (me.getPieceType() == ChessPiece.PieceType.ROOK) {
                 if (move.getStartPosition().getColumn() == 1 && !this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "R-l" : "r-l")) {
                     this.board.piecesMoved.put((me.getTeamColor() == TeamColor.WHITE ? "R-l" : "r-l"), true);
-                } else if (move.getStartPosition().getColumn() == 8 && !this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "R-r" : "r-r")) {
+                } else if (move.getStartPosition().getColumn() == 8 &&
+                        !this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "R-r" : "r-r")) {
                     this.board.piecesMoved.put((me.getTeamColor() == TeamColor.WHITE ? "R-r" : "r-r"), true);
                 }
             }
