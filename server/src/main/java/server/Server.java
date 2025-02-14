@@ -13,11 +13,14 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+        Spark.post("/user", this::register); // Register
+        Spark.post("/session", this::login); // Login
+        Spark.delete("/session", this::logout); // Logout
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
-        Spark.post("/user", this::register);
-        Spark.post("/session", this::login);
+
+
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -33,6 +36,13 @@ public class Server {
     private Object login(Request req, Response res) {
         var handler = new LoginHandler(req);
         String response = handler.login();
+        res.status(200);
+        return response;
+    }
+
+    private Object logout(Request req, Response res) {
+        var handler = new LogoutHandler(req);
+        String response = handler.logout();
         res.status(200);
         return response;
     }

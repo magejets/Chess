@@ -1,6 +1,14 @@
 #Notes file
-- break up long lines
-- ? remove duplicate code in bishop and rook
+- Implement:
+  - logout
+  - list games
+  - create game
+  - join games
+  - clear
+- implement error handling for the above
+- delete superfluous comments
+- break up long lines $$
+- ? remove duplicate code in bishop and rook $$
 - make move method ChessBoard $$
 - write a test for IsCheck (debug) $$
 - write IsCheckMate and tests $$

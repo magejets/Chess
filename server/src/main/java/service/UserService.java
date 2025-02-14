@@ -5,12 +5,15 @@ import dataaccess.UserDao;
 import model.AuthData;
 import model.UserData;
 import request.LoginRequest;
+import request.LogoutRequest;
 import request.RegisterRequest;
 import result.LoginResult;
+import result.LogoutResult;
 import result.RegisterResult;
 
 public class UserService {
     final private UserDao dataAccess = new UserDao();
+    final private AuthDao authDataAccess = new AuthDao();
 
     public RegisterResult register(RegisterRequest request) {
 
@@ -42,10 +45,13 @@ public class UserService {
         return new LoginResult(request.username(), authData.authToken());
     }
 
+    public LogoutResult logout(LogoutRequest request) {
+        // remove the auth data
+        return new LogoutResult();
+    }
 
     private AuthData createAuth(String username) {
         AuthData authData = new AuthData("randomhash", username);
-        AuthDao authDataAccess = new AuthDao();
         authDataAccess.add(authData);
         return authData; // the auth token is a dummy! replace with random generated
     }
