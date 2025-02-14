@@ -46,7 +46,14 @@ public class UserService {
     }
 
     public LogoutResult logout(LogoutRequest request) {
-        // remove the auth data
+        // first verify the auth data
+        AuthData authData = authDataAccess.find(request.authToken());
+        if (authData != null) {
+            // remove the auth data
+            authDataAccess.remove(request.authToken());
+        } else {
+            // error of some sort
+        }
         return new LogoutResult();
     }
 

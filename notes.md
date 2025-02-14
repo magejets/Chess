@@ -5,6 +5,7 @@
   - create game
   - join games
   - clear
+- Generate an actual auth token
 - implement error handling for the above
 - delete superfluous comments
 - break up long lines $$

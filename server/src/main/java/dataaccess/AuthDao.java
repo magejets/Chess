@@ -15,4 +15,8 @@ public class AuthDao {
     public void add(AuthData newAuth) {
         database.put(newAuth.authToken(), newAuth);
     }
+
+    public void remove(String authToken) {
+        database.remove(authToken);
+    }
 }
