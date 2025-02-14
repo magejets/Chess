@@ -17,6 +17,7 @@ public class Server {
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
         Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -25,6 +26,13 @@ public class Server {
     private Object register(Request req, Response res) { // throws ResponseException {
         var handler = new RegisterHandler(req);
         String response = handler.register(); // figure out what datatype this needs to be
+        res.status(200);
+        return response;
+    }
+
+    private Object login(Request req, Response res) {
+        var handler = new LoginHandler(req);
+        String response = handler.login();
         res.status(200);
         return response;
     }
