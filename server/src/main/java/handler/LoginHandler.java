@@ -2,21 +2,17 @@ package handler;
 
 import com.google.gson.Gson;
 import request.LoginRequest;
-import request.RegisterRequest;
 import result.LoginResult;
-import result.RegisterResult;
 import service.UserService;
 import spark.Request;
+import spark.Response;
+import spark.Route;
 
-public class LoginHandler {
-    Request req;
-    public LoginHandler(Request req) { // this is the same as the register handler. Use inheritance to reduce redundancy
-        this.req = req;
-    }
-
-    public String login() {
+public class LoginHandler implements Route {
+    public String handle(Request req, Response res) {
         var request = new Gson().fromJson(req.body(), LoginRequest.class);
         var service = new UserService();
+        res.status(200);
         return new Gson().toJson(service.login(request), LoginResult.class);
     }
 }

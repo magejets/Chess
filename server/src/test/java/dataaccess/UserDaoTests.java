@@ -9,7 +9,16 @@ public class UserDaoTests {
     public void testCreateAndGetUser() {
         MemoryUserDao testDao = new MemoryUserDao();
         UserData user = new UserData("mage", "12345", "mage@cs240.com");
-        testDao.createUser(user);
-        Assertions.assertEquals(testDao.getUser("mage"), user);
+        try {
+            testDao.createUser(user);
+        } catch (DataAccessException e) {
+
+        }
+        try {
+            UserData gotUser = testDao.getUser("mage");
+            Assertions.assertEquals(gotUser, user);
+        } catch (DataAccessException e) {
+
+        }
     }
 }

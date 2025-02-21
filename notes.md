@@ -1,14 +1,9 @@
 #Notes file
 - Implement:
-  - logout
-    - figure out how to pull data from the header
   - list games
   - create game
   - join games
   - clear
-- Make DAO interface and make my implementation the memory version (- Move the data to a separate class from the dao)
-  - move the functions in the service to the DAO
-- Generate an actual auth token $$
 - implement error handling for the above
   - have the results include a message
   - use a switch case statement to find the error code

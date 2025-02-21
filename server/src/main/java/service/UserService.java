@@ -1,6 +1,7 @@
 package service;
 
 
+import dataaccess.DataAccessException;
 import dataaccess.userdao.MemoryUserDao;
 import dataaccess.userdao.UserDao;
 import dataaccess.authdao.AuthDao;
@@ -31,7 +32,12 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest request) {
-        UserData user = dataAccess.getUser(request.username());
+        UserData user;
+        try {
+            user = dataAccess.getUser(request.username());
+        } catch (DataAccessException e) {
+            user = new UserData();
+        }
         AuthData authData;
         if (user == null) {
             // error 401?
@@ -48,10 +54,19 @@ public class UserService {
 
     public LogoutResult logout(LogoutRequest request) {
         // first verify the auth data
-        AuthData authData = authDataAccess.getAuth(request.authToken());
+        AuthData authData;
+        try {
+            authData = authDataAccess.getAuth(request.authToken());
+        } catch (DataAccessException e) {
+            authData = new AuthData();
+        }
         if (authData != null) {
             // remove the auth data
-            authDataAccess.removeAuth(request.authToken());
+            try {
+                authDataAccess.removeAuth(request.authToken());
+            } catch (DataAccessException e) {
+
+            }
         } else {
             // error of some sort
         }
