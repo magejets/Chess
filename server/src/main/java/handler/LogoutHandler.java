@@ -15,8 +15,10 @@ public class LogoutHandler {
     }
 
     public String logout() {
-        var request = new Gson().fromJson(req.headers("AuthToken"), LogoutRequest.class);
+        //var request = new Gson().fromJson(req.headers("Authorization"), LogoutRequest.class);
+        var request = new LogoutRequest(req.headers("Authorization"));
         var service = new UserService();
+        // service.validate authtoken
         return new Gson().toJson(service.logout(request), LogoutResult.class);
     }
 }

@@ -1,18 +1,17 @@
 #Notes file
 - Implement:
   - logout
+    - figure out how to pull data from the header
   - list games
   - create game
   - join games
   - clear
-- Generate an actual auth token
+- Make DAO interface and make my implementation the memory version (- Move the data to a separate class from the dao)
+  - move the functions in the service to the DAO
+- Generate an actual auth token $$
 - implement error handling for the above
+  - have the results include a message
+  - use a switch case statement to find the error code
+- put createRoutes in separate method
+- Make handlers combined with methods in Server?
 - delete superfluous comments
-- break up long lines $$
-- ? remove duplicate code in bishop and rook $$
-- make move method ChessBoard $$
-- write a test for IsCheck (debug) $$
-- write IsCheckMate and tests $$
-  - make IsCheck that takes a hypothetical board or maybe a move to check if still in check after said move $$
-- write isStalemate $$
-- write validMoves method $$

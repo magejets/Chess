@@ -1,18 +1,19 @@
-package dataaccess;
+package dataaccess.userdao;
 
 import model.UserData;
 
 import java.util.HashMap;
 
-public class UserDao {
+public class MemoryUserDao implements UserDao {
     // dummy map to stand in for database
     private static HashMap<String, UserData> database = new HashMap<>();
 
-    public UserData find(String username) {
+
+    public UserData getUser(String username) {
         return database.get(username);
     }
 
-    public void add(UserData newUser) {
+    public void createUser(UserData newUser) {
         database.put(newUser.username(), newUser);
     }
 }
