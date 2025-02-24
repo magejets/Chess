@@ -30,6 +30,7 @@ public class Server {
         Spark.post("/session", new LoginHandler()); // Login
         Spark.delete("/session", new LogoutHandler()); // Logout
         Spark.get("/game", new ListHandler()); // List Games
+        Spark.post("/game", new CreateHandler()); // Create Games
     }
 
     public void stop() {

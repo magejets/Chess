@@ -1,12 +1,10 @@
 #Notes file
 - Implement:
-  - list games
   - create game
   - join games
   - clear
 - implement error handling for the above
   - have the results include a message
   - use a switch case statement to find the error code
-- put createRoutes in separate method
-- Make handlers combined with methods in Server?
+- write tests for everything
 - delete superfluous comments

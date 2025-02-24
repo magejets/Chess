@@ -22,11 +22,12 @@ public class UserService {
     public RegisterResult register(RegisterRequest request) {
 
         UserData newUser = new UserData(request);
+        try {
         if (dataAccess.getUser(request.username()) == null) {
             dataAccess.createUser(newUser);
         } else {
             // error handling, 403 already exists
-        }
+        } } catch (DataAccessException e) {}
 
         return new RegisterResult(login(new LoginRequest(request)));
     }
@@ -38,12 +39,14 @@ public class UserService {
         } catch (DataAccessException e) {
             user = new UserData();
         }
-        AuthData authData;
+        AuthData authData = new AuthData();
         if (user == null) {
             // error 401?
             return null; // probably will want to find a way I can return an error message
         } else if (request.password().equals(user.password())) {
-            authData = authDataAccess.createAuth(user.username());
+            try {
+                authData = authDataAccess.createAuth(user.username());
+            } catch (DataAccessException e) {}
         } else {
             // error 401, unauthorized
             return null; // same as above

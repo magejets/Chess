@@ -10,7 +10,7 @@ import spark.Route;
 
 public class ListHandler implements Route {
     public String handle(Request req, Response res) {
-        var request = new Gson().fromJson(req.headers("AuthToken") , ListRequest.class);
+        var request = new Gson().fromJson(req.headers("Authorization") , ListRequest.class);
         var service = new GameService();
         res.status(200);
         return new Gson().toJson(service.listGames(request), ListResult.class);
