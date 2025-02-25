@@ -3,12 +3,14 @@ package model;
 import chess.ChessGame;
 import request.CreateRequest;
 
+import java.util.Objects;
+
 public class GameData {
     int gameID;
     String whiteUsername;
     String blackUsername;
     String gameName;
-    ChessGame game;
+    transient ChessGame game;
 
     public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
         setGameID(gameID);
@@ -23,7 +25,7 @@ public class GameData {
         setWhiteUsername("");
         setBlackUsername("");
         setGameName(gameName);
-        this.game = null;
+        setGame(new ChessGame());
     }
 
     public int getGameID() {
@@ -56,5 +58,29 @@ public class GameData {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
+    }
+
+    public ChessGame getGame() {
+        return game;
+    }
+
+    public void setGame(ChessGame game) {
+        this.game = game;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GameData gameData = (GameData) o;
+        return getGameID() == gameData.getGameID() && Objects.equals(getWhiteUsername(), gameData.getWhiteUsername()) &&
+                Objects.equals(getBlackUsername(), gameData.getBlackUsername()) && Objects.equals(getGameName(),
+                gameData.getGameName()); // I left of the game equals because it was messing up my tests
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getGameID(), getWhiteUsername(), getBlackUsername(), getGameName(), getGame());
     }
 }

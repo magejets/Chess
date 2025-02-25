@@ -15,9 +15,9 @@ import result.LoginResult;
 import result.LogoutResult;
 import result.RegisterResult;
 
-public class UserService {
+public class UserService extends Service{
     final private UserDao dataAccess = new MemoryUserDao();
-    final private AuthDao authDataAccess = new MemoryAuthDao();
+    //final private AuthDao authDataAccess = new MemoryAuthDao();
 
     public RegisterResult register(RegisterRequest request) {
 

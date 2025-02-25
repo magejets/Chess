@@ -1,4 +1,4 @@
 package service;
 
-public class ClearService {
+public class ClearService extends Service{
 }

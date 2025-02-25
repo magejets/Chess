@@ -1,30 +1,48 @@
 package dataaccess;
 
+import dataaccess.authdao.AuthDao;
 import dataaccess.authdao.MemoryAuthDao;
-import dataaccess.userdao.MemoryUserDao;
 import model.AuthData;
-import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AuthDaoTests {
 
     @Test
-    public void testCreateAndGetUser() {
-        MemoryAuthDao testDao = new MemoryAuthDao();
+    public void testCreateAndGetAuth() {
+        AuthDao testDao = new MemoryAuthDao();
+        AuthData authData = new AuthData("random-hash-id","uninitialized-user");
+        try {
+            authData = testDao.createAuth("mage");
+        } catch (DataAccessException e) {
+
+        }
+        try {
+            AuthData gotData = testDao.getAuth(authData.authToken());
+            Assertions.assertEquals(gotData.username(), authData.username());
+            Assertions.assertEquals(authData.authToken(), gotData.authToken());
+        } catch (DataAccessException e) {
+
+        }
+    }
+
+    @Test
+    public void testRemoveAuth() {
+        AuthDao testDao = new MemoryAuthDao();
         AuthData authData = new AuthData("random-hash-id","mage");
         try {
-            testDao.createAuth(authData.username());
+            authData = testDao.createAuth(authData.username());
         } catch (DataAccessException e) {
 
         }
         try {
-            AuthData gotData = testDao.getAuth("mage");
-            Assertions.assertEquals(gotData.username(), authData.username());
-            Assertions.assertEquals(36, gotData.authToken().length());
+            testDao.removeAuth(authData.authToken());
+            authData = testDao.getAuth(authData.authToken());
         } catch (DataAccessException e) {
 
         }
+
+        Assertions.assertNull(authData);
     }
 }
 
