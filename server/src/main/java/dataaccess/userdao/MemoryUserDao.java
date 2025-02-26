@@ -17,4 +17,8 @@ public class MemoryUserDao implements UserDao {
     public void createUser(UserData newUser) throws DataAccessException {
         database.put(newUser.username(), newUser);
     }
+
+    public void clear() throws DataAccessException {
+        database.clear();;
+    }
 }

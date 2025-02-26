@@ -32,6 +32,7 @@ public class Server {
         Spark.get("/game", new ListHandler()); // List Games
         Spark.post("/game", new CreateHandler()); // Create Games
         Spark.put("/game", new JoinHandler()); // Join Games
+        Spark.delete("/db", new ClearHandler());
     }
 
     public void stop() {

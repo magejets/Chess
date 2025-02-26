@@ -4,8 +4,6 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.userdao.MemoryUserDao;
 import dataaccess.userdao.UserDao;
-import dataaccess.authdao.AuthDao;
-import dataaccess.authdao.MemoryAuthDao;
 import model.AuthData;
 import model.UserData;
 import request.LoginRequest;
@@ -17,17 +15,18 @@ import result.RegisterResult;
 
 public class UserService extends Service{
     final private UserDao dataAccess = new MemoryUserDao();
-    //final private AuthDao authDataAccess = new MemoryAuthDao();
 
     public RegisterResult register(RegisterRequest request) {
 
         UserData newUser = new UserData(request);
         try {
-        if (dataAccess.getUser(request.username()) == null) {
-            dataAccess.createUser(newUser);
-        } else {
-            // error handling, 403 already exists
-        } } catch (DataAccessException e) {}
+            if (dataAccess.getUser(request.username()) == null) {
+                dataAccess.createUser(newUser);
+            } else {
+                // error handling, 403 already exists
+                return new RegisterResult(request.username(), "", "Error: already taken");
+            }
+        } catch (DataAccessException e) {}
 
         return new RegisterResult(login(new LoginRequest(request)));
     }
@@ -41,15 +40,13 @@ public class UserService extends Service{
         }
         AuthData authData = new AuthData();
         if (user == null) {
-            // error 401?
-            return null; // probably will want to find a way I can return an error message
+            return new LoginResult(request.username(), "", "Error: unauthorized");
         } else if (request.password().equals(user.password())) {
             try {
                 authData = authDataAccess.createAuth(user.username());
             } catch (DataAccessException e) {}
         } else {
-            // error 401, unauthorized
-            return null; // same as above
+            return new LoginResult(request.username(), "", "Error: unauthorized");
         }
 
         return new LoginResult(request.username(), authData.authToken());
@@ -71,8 +68,8 @@ public class UserService extends Service{
 
             }
         } else {
-            // error of some sort
+            return new LogoutResult("Error: unauthorized");
         }
-        return new LogoutResult();
+        return new LogoutResult("");
     }
 }

@@ -4,7 +4,6 @@ import dataaccess.DataAccessException;
 import model.GameData;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,5 +27,10 @@ public class MemoryGameDao implements GameDao{
                 playerColor.equals("BLACK") ? username : oldGame.getBlackUsername(),
                 oldGame.getGameName(), oldGame.getGame());
         gameList.put(gameID, updatedGame);
+    }
+
+    public void clear() throws DataAccessException {
+        gameList.clear();
+        lastIndex = 0;
     }
 }

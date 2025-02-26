@@ -28,4 +28,8 @@ public class MemoryAuthDao implements AuthDao{
         database.put(authData.authToken(), authData);
         return authData;
     }
+
+    public void clear() throws DataAccessException {
+        database.clear();;
+    }
 }

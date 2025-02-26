@@ -6,12 +6,16 @@ import dataaccess.gamedao.MemoryGameDao;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import service.ClearService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameDaoTests {
     @Test
     public void testCreateAndGetGame() {
+        ClearService clearService = new ClearService();
+        clearService.clear();
         GameDao testDao = new MemoryGameDao();
         GameData gameData = new GameData("myGame");
         int gameID = -1;

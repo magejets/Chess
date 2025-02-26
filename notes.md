@@ -1,9 +1,13 @@
 #Notes file
-- Implement:
-  - clear
-- Make an auth function in a parent class of something
+- write tests for the service classes
+  - Game service
 - implement error handling for the above
   - have the results include a message
   - use a switch case statement to find the error code
-- write tests for everything
+    - Register
+    - Login
+    - Logout
+    - List
+    - Join
+    - Create
 - delete superfluous comments
