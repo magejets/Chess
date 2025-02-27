@@ -1,6 +1,7 @@
 package service;
 
 import chess.ChessGame;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +27,12 @@ public class TestGameService {
         GameService service = new GameService();
 
         // run the function
-        AuthData testData = service.authorize(registerResult.authToken());
+        AuthData testData = null;
+        try {
+            testData = service.authorize(registerResult.authToken());
+        } catch (DataAccessException e) {
+
+        }
 
         // test
         Assertions.assertNotNull(testData);
@@ -44,7 +50,12 @@ public class TestGameService {
         GameService service = new GameService();
 
         // run the function
-        AuthData testData = service.authorize(registerResult.authToken());
+        AuthData testData = null;
+        try {
+            testData = service.authorize(registerResult.authToken());
+        } catch (DataAccessException e) {
+
+        }
 
         // test
         Assertions.assertNull(testData);

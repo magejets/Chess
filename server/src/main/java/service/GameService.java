@@ -19,40 +19,53 @@ public class GameService extends Service{
 
     public ListResult listGames(ListRequest request) {
         // authorize first
-        if (authorize(request.authToken()) != null) {
-            List<GameData> gameList = new ArrayList<>();
-            try {
-                gameList = dataAccess.getGames();
-            } catch (DataAccessException e) {
+        try {
+            if (authorize(request.authToken()) != null) {
+                List<GameData> gameList = new ArrayList<>();
+                try {
+                    gameList = dataAccess.getGames();
+                } catch (DataAccessException e) {
+                    return new ListResult("Error: Data Access Exception");
+                }
 
+                return new ListResult(gameList);
+            } else {
+                return new ListResult("Error: unauthorized");
             }
-
-            return new ListResult(gameList);
-        } else {
-            return new ListResult("Error: unauthorized");
+        } catch (DataAccessException e) {
+            return new ListResult("Error: Data Access Exception");
         }
     }
 
     public CreateResult createGame(CreateRequest request) {
         // authorize first
-        if (authorize(request.getAuthToken()) != null) {
-            GameData game = new GameData(request.getGameName());
-            int gameID = -1; // initialized to a value it will never naturally be
-            try {
-                gameID = dataAccess.createGame(game);
-            } catch (DataAccessException e) {
+        try {
+            if (authorize(request.getAuthToken()) != null) {
+                GameData game = new GameData(request.getGameName());
+                int gameID = -1; // initialized to a value it will never naturally be
+                try {
+                    gameID = dataAccess.createGame(game);
+                } catch (DataAccessException e) {
+                    return new CreateResult("Error: Data Access Exception");
+                }
 
+                return new CreateResult(gameID);
+            } else {
+                return new CreateResult("Error: unauthorized");
             }
-
-            return new CreateResult(gameID);
-        } else {
-            return new CreateResult("Error: unauthorized");
+        } catch (DataAccessException e) {
+            return new CreateResult("Error: Data Access Exception");
         }
     }
 
     public JoinResult joinGames(JoinRequest request) {
         // authorize first
-        AuthData authData = authorize(request.getAuthToken());
+        AuthData authData;
+        try {
+            authData = authorize(request.getAuthToken());
+        } catch (DataAccessException e) {
+            return new JoinResult("Error: Data Access Exception");
+        }
         if (authData == null) {
             return new JoinResult("Error: unauthorized");
         } else {
@@ -66,7 +79,7 @@ public class GameService extends Service{
                     return new JoinResult("Error: bad request");
                 }
             } catch (DataAccessException e) {
-
+                return new JoinResult("Error: Data Access Exception");
             }
         }
 

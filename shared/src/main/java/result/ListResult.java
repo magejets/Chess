@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ListResult {
     private List<GameData> games;
-    private String message;
+    private transient String message;
 
     public ListResult(List<GameData> gameList) {
         this.games = gameList;

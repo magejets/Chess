@@ -9,11 +9,11 @@ import java.util.Map;
 
 public class Service {
     final AuthDao authDataAccess = new MemoryAuthDao();
-    public AuthData authorize(String authToken) {
+    public AuthData authorize(String authToken) throws DataAccessException {
         try {
             return authDataAccess.getAuth(authToken);
         } catch (DataAccessException e) {
-            return null;
+            throw e;
         }
     }
 }

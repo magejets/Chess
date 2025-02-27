@@ -26,7 +26,9 @@ public class UserService extends Service{
                 // error handling, 403 already exists
                 return new RegisterResult(request.username(), "", "Error: already taken");
             }
-        } catch (DataAccessException e) {}
+        } catch (DataAccessException e) {
+            return new RegisterResult(request.username(), "", "Error: Data Access Exception");
+        }
 
         return new RegisterResult(login(new LoginRequest(request)));
     }
@@ -54,13 +56,18 @@ public class UserService extends Service{
 
     public LogoutResult logout(LogoutRequest request) {
         // first verify the auth data
-        AuthData authData = authorize(request.authToken());
+        AuthData authData = null;
+        try {
+            authData = authorize(request.authToken());
+        } catch (DataAccessException e) {
+            return new LogoutResult("Error: Data Access Exception");
+        }
         if (authData != null) {
             // remove the auth data
             try {
                 authDataAccess.removeAuth(request.authToken());
             } catch (DataAccessException e) {
-
+                return new LogoutResult("Error: Data Access Exception");
             }
         } else {
             return new LogoutResult("Error: unauthorized");

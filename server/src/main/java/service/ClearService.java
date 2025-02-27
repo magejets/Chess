@@ -17,7 +17,7 @@ public class ClearService extends Service{
             gameDataAccess.clear();
             authDataAccess.clear();
         } catch (DataAccessException e) {
-            return new ClearResult("Error: Data Access Error");
+            return new ClearResult("Error: Data Access Exception");
         }
 
         return new ClearResult("");
