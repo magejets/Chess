@@ -54,12 +54,7 @@ public class UserService extends Service{
 
     public LogoutResult logout(LogoutRequest request) {
         // first verify the auth data
-        AuthData authData;
-        try {
-            authData = authDataAccess.getAuth(request.authToken());
-        } catch (DataAccessException e) {
-            authData = new AuthData();
-        }
+        AuthData authData = authorize(request.authToken());
         if (authData != null) {
             // remove the auth data
             try {

@@ -1,6 +1,4 @@
 #Notes file
-- write tests for the service classes
-  - Game service
 - implement error handling for the above
   - have the results include a message
   - use a switch case statement to find the error code

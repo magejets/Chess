@@ -29,7 +29,7 @@ public class GameService extends Service{
 
             return new ListResult(gameList);
         } else {
-            return new ListResult(null);
+            return new ListResult("Error: unauthorized");
         }
     }
 
@@ -46,7 +46,7 @@ public class GameService extends Service{
 
             return new CreateResult(gameID);
         } else {
-            return new CreateResult(-1); // probably some better error handling
+            return new CreateResult("Error: unauthorized");
         }
     }
 
@@ -54,15 +54,22 @@ public class GameService extends Service{
         // authorize first
         AuthData authData = authorize(request.getAuthToken());
         if (authData == null) {
-            // error
+            return new JoinResult("Error: unauthorized");
         } else {
             try {
-                dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
+                if (request.getPlayerColor().equals("WHITE") || request.getPlayerColor().equals("BLACK")) {
+                    boolean notTaken = dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
+                    if (!notTaken) {
+                        return new JoinResult("Error: already taken");
+                    }
+                } else {
+                    return new JoinResult("Error: bad request");
+                }
             } catch (DataAccessException e) {
 
             }
         }
 
-        return new JoinResult();
+        return new JoinResult("");
     }
 }

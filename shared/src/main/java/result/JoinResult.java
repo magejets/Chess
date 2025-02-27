@@ -1,4 +1,4 @@
 package result;
 
-public class JoinResult {
+public record JoinResult (String message){
 }

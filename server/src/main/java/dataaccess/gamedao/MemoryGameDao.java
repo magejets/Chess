@@ -21,12 +21,20 @@ public class MemoryGameDao implements GameDao{
         return lastIndex++;
     }
 
-    public void updateGame(int gameID, String playerColor, String username) throws DataAccessException{
+    public boolean updateGame(int gameID, String playerColor, String username) throws DataAccessException{
         GameData oldGame = gameList.get(gameID);
-        GameData updatedGame = new GameData(gameID, playerColor.equals("WHITE") ? username : oldGame.getWhiteUsername(),
-                playerColor.equals("BLACK") ? username : oldGame.getBlackUsername(),
-                oldGame.getGameName(), oldGame.getGame());
-        gameList.put(gameID, updatedGame);
+        GameData updatedGame;
+        if (playerColor.equals("WHITE") ?
+                (oldGame.getWhiteUsername().equals("")) : (oldGame.getBlackUsername().equals(""))) {
+             updatedGame = new GameData(gameID, playerColor.equals("WHITE") ? username : oldGame.getWhiteUsername(),
+                    playerColor.equals("BLACK") ? username : oldGame.getBlackUsername(),
+                    oldGame.getGameName(), oldGame.getGame());
+            gameList.put(gameID, updatedGame);
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     public void clear() throws DataAccessException {
