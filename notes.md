@@ -1,11 +1,4 @@
 #Notes file
-- implement error handling for the above
-  - use a switch case statement to find the error code
-    - List
-    - Join
-    - Create
-- bad request: join game, game ID negative or non int or not in database
-- bad request: register, missing fields
-- bad request: create game, empty game name
+- go through passoff tests and debug
 - delete superfluous comments
 - look through all warnings and double check or resolve

@@ -23,6 +23,9 @@ public class MemoryGameDao implements GameDao{
 
     public boolean updateGame(int gameID, String playerColor, String username) throws DataAccessException{
         GameData oldGame = gameList.get(gameID);
+        if (oldGame == null) {
+            throw new DataAccessException("Error: game does not exist");
+        }
         GameData updatedGame;
         if (playerColor.equals("WHITE") ?
                 (oldGame.getWhiteUsername().equals("")) : (oldGame.getBlackUsername().equals(""))) {

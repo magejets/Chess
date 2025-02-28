@@ -103,6 +103,24 @@ public class TestGameService {
     }
 
     @Test
+    public void TestCreateGameNegativeBadRequest() {
+        // setup
+        ClearService clearService = new ClearService();
+        clearService.clear();
+        UserService userService = new UserService();
+        RegisterRequest registerRequest = new RegisterRequest("username", "password", "email@email.com");
+        RegisterResult registerResult = userService.register(registerRequest);
+        GameService service = new GameService();
+        CreateRequest request = new CreateRequest(registerResult.authToken(), ""); // no game name, bad request
+
+        // run the function
+        CreateResult result = service.createGame(request);
+
+        // test
+        Assertions.assertEquals("Error: bad request", result.message());
+    }
+
+    @Test
     public void TestListGamesPositive() {
         // setup
         ClearService clearService = new ClearService();
@@ -231,6 +249,50 @@ public class TestGameService {
 
         // test
         Assertions.assertEquals("Error: bad request", result1.message());
+    }
+
+    @Test
+    public void TestJoinGameNegativeBadGameID() {
+        // setup
+        ClearService clearService = new ClearService();
+        clearService.clear();
+        UserService userService = new UserService();
+        RegisterRequest registerRequest = new RegisterRequest("username", "password", "email@email.com");
+        RegisterResult registerResult = userService.register(registerRequest);
+        GameService service = new GameService();
+        CreateRequest request = new CreateRequest(registerResult.authToken(), "myGame");
+        CreateRequest request2 = new CreateRequest(registerResult.authToken(), "myGame2");
+        service.createGame(request);
+        service.createGame(request2);
+
+        // run the function
+        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), -1, "WHITE");
+        JoinResult result1 = service.joinGames(joinRequest);
+
+        // test
+        Assertions.assertEquals("Error: bad request", result1.message());
+    }
+
+    @Test
+    public void TestJoinGameNegativeIDNoExist() {
+        // setup
+        ClearService clearService = new ClearService();
+        clearService.clear();
+        UserService userService = new UserService();
+        RegisterRequest registerRequest = new RegisterRequest("username", "password", "email@email.com");
+        RegisterResult registerResult = userService.register(registerRequest);
+        GameService service = new GameService();
+        CreateRequest request = new CreateRequest(registerResult.authToken(), "myGame");
+        CreateRequest request2 = new CreateRequest(registerResult.authToken(), "myGame2");
+        service.createGame(request);
+        service.createGame(request2);
+
+        // run the function
+        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), 35, "WHITE");
+        JoinResult result1 = service.joinGames(joinRequest);
+
+        // test
+        Assertions.assertEquals("Error: game does not exist", result1.message());
     }
 
     @Test

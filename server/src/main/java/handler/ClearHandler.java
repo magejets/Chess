@@ -16,7 +16,7 @@ public class ClearHandler implements Route {
         switch (result.message()) {
             case "":
                 res.status(200);
-                return "";
+                return "{}";
             case null, default:
                 res.status(500);
                 return new Gson().toJson(service.clear(), ClearResult.class);

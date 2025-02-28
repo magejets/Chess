@@ -48,6 +48,21 @@ public class TestUserService {
     }
 
     @Test
+    public void TestRegisterNegativeBadRequest() {
+        // setup
+        ClearService clearService = new ClearService();
+        clearService.clear();
+        UserService service = new UserService();
+        RegisterRequest invalidRequest = new RegisterRequest("", "", ""); // fields missing, bad request
+
+        // run the function
+        RegisterResult result = service.register(invalidRequest);
+
+        // test
+        Assertions.assertEquals("Error: bad request", result.message());
+    }
+
+    @Test
     public void TestLoginPositive() {
         // setup
         ClearService clearService = new ClearService();
@@ -121,5 +136,23 @@ public class TestUserService {
 
         // test
         Assertions.assertEquals("Error: unauthorized", result.message());
+    }
+
+    @Test
+    public void TestAuthRandom() { // thanks James
+        // setup
+        ClearService clearService = new ClearService();
+        clearService.clear();
+        UserService service = new UserService();
+        RegisterResult registerResult = service.register(new RegisterRequest("username", "password", "email@email.com"));
+        LogoutRequest logoutRequest = new LogoutRequest(registerResult.authToken());
+        service.logout(logoutRequest);
+        LoginRequest request = new LoginRequest("username", "password");
+
+        // run the function
+        LoginResult result = service.login(request);
+
+        // test
+        Assertions.assertNotEquals(registerResult.authToken(), result.authToken());
     }
 }

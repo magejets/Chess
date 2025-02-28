@@ -18,12 +18,15 @@ public class UserService extends Service{
 
     public RegisterResult register(RegisterRequest request) {
 
+        if (request.username().equals("") || request.password().equals("") || request.email().equals("")) {
+            return new RegisterResult(request.username(), "", "Error: bad request");
+        }
+
         UserData newUser = new UserData(request);
         try {
             if (dataAccess.getUser(request.username()) == null) {
                 dataAccess.createUser(newUser);
             } else {
-                // error handling, 403 already exists
                 return new RegisterResult(request.username(), "", "Error: already taken");
             }
         } catch (DataAccessException e) {
@@ -63,7 +66,6 @@ public class UserService extends Service{
             return new LogoutResult("Error: Data Access Exception");
         }
         if (authData != null) {
-            // remove the auth data
             try {
                 authDataAccess.removeAuth(request.authToken());
             } catch (DataAccessException e) {
