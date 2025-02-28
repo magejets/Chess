@@ -19,7 +19,7 @@ public class JoinRequest {
         return this.authToken;
     }
 
-    public int getGameID() {
+    public Integer getGameID() {
         return gameID;
     }
 

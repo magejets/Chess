@@ -14,6 +14,9 @@ public class RegisterResult{
     public RegisterResult(LoginResult result) {
         this(result.username(), result.authToken(), result.message());
     }
+    public RegisterResult(String message) {
+        this("", "", message);
+    }
 
     public String username() {
         return this.username;

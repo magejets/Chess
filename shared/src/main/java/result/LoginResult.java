@@ -13,6 +13,9 @@ public class LoginResult{
     public LoginResult(String username, String authToken) {
         this(username, authToken, "");
     }
+    public LoginResult(String message) {
+        this("", "", message);
+    }
 
     public String username() {
         return this.username;

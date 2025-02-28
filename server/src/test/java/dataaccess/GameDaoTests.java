@@ -27,8 +27,8 @@ public class GameDaoTests {
         try {
             List<GameData> gotData = testDao.getGames();
             List<GameData> expected = new ArrayList<>();
-            expected.add(new GameData(0, "", "", "myGame", new ChessGame()));
-            Assertions.assertTrue(gotData.get(gameID).equals(expected.get(gameID)));
+            expected.add(new GameData(1, null, null, "myGame", new ChessGame()));
+            Assertions.assertEquals(gotData.get(gameID - 1), expected.get(gameID - 1));
         } catch (DataAccessException e) {
 
         }
@@ -48,8 +48,8 @@ public class GameDaoTests {
             testDao.updateGame(gameID, "WHITE", "george");
             List<GameData> gotData = testDao.getGames();
             List<GameData> expected = new ArrayList<>();
-            expected.add(new GameData(0, "george", "", "myGame", new ChessGame()));
-            Assertions.assertTrue(gotData.get(gameID).equals(expected.get(gameID)));
+            expected.add(new GameData(1, "george", null, "myGame", new ChessGame()));
+            Assertions.assertEquals(gotData.get(gameID - 1), expected.get(gameID - 1));
         } catch (DataAccessException e) {
 
         }

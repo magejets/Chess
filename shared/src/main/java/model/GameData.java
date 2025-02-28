@@ -6,7 +6,7 @@ import request.CreateRequest;
 import java.util.Objects;
 
 public class GameData {
-    int gameID;
+    Integer gameID;
     String whiteUsername;
     String blackUsername;
     String gameName;
@@ -22,8 +22,8 @@ public class GameData {
 
     public GameData(String gameName) {
         setGameID(-1);
-        setWhiteUsername("");
-        setBlackUsername("");
+        setWhiteUsername(null);
+        setBlackUsername(null);
         setGameName(gameName);
         setGame(new ChessGame());
     }

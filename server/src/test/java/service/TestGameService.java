@@ -71,7 +71,7 @@ public class TestGameService {
         RegisterResult registerResult = userService.register(registerRequest);
         GameService service = new GameService();
         CreateRequest request = new CreateRequest(registerResult.authToken(), "myGame");
-        GameData expectedGame = new GameData(0, "", "", "myGame", new ChessGame());
+        GameData expectedGame = new GameData(1, null, null, "myGame", new ChessGame());
         ListRequest listRequest = new ListRequest(registerResult.authToken());
 
         // run the function
@@ -79,7 +79,7 @@ public class TestGameService {
         GameData actualGame = service.listGames(listRequest).getGames().getFirst();
 
         // test
-        Assertions.assertEquals(0, result.gameID());
+        Assertions.assertEquals(1, result.gameID());
         Assertions.assertEquals(expectedGame, actualGame);
     }
 
@@ -136,16 +136,16 @@ public class TestGameService {
         CreateResult result2 = service.createGame(request2);
 
         List<GameData> expectedGames = new ArrayList<>();
-        expectedGames.add(new GameData(0, "", "", "myGame", new ChessGame()));
-        expectedGames.add(new GameData(1, "", "", "myGame2", new ChessGame()));
+        expectedGames.add(new GameData(1, null, null, "myGame", new ChessGame()));
+        expectedGames.add(new GameData(2, null, null, "myGame2", new ChessGame()));
 
         // run the function
         ListRequest listRequest = new ListRequest(registerResult.authToken());
         List<GameData> actualGames = service.listGames(listRequest).getGames();
 
         // test
-        Assertions.assertEquals(0, result.gameID());
-        Assertions.assertEquals(1, result2.gameID());
+        Assertions.assertEquals(1, result.gameID());
+        Assertions.assertEquals(2, result2.gameID());
         Assertions.assertEquals(expectedGames, actualGames);
     }
 
@@ -187,12 +187,12 @@ public class TestGameService {
         service.createGame(request2);
 
         List<GameData> expectedGames = new ArrayList<>();
-        expectedGames.add(new GameData(0, "username", "", "myGame", new ChessGame()));
-        expectedGames.add(new GameData(1, "", "username", "myGame2", new ChessGame()));
+        expectedGames.add(new GameData(1, "username", null, "myGame", new ChessGame()));
+        expectedGames.add(new GameData(2, null, "username", "myGame2", new ChessGame()));
 
         // run the function
-        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), 0, "WHITE");
-        JoinRequest joinRequest2 = new JoinRequest(registerResult.authToken(), 1, "BLACK");
+        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), 1, "WHITE");
+        JoinRequest joinRequest2 = new JoinRequest(registerResult.authToken(), 2, "BLACK");
         JoinResult result1 = service.joinGames(joinRequest);
         JoinResult result2 = service.joinGames(joinRequest2);
 
@@ -220,7 +220,7 @@ public class TestGameService {
         service.createGame(request2);
 
         // run the function
-        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), 0, "WHITE");
+        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), 1, "WHITE");
         JoinResult result1 = service.joinGames(joinRequest);
 
         // test
@@ -308,12 +308,12 @@ public class TestGameService {
         service.createGame(request);
 
         // run the function
-        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), 0, "WHITE");
+        JoinRequest joinRequest  = new JoinRequest(registerResult.authToken(), 1, "WHITE");
         JoinResult result1 = service.joinGames(joinRequest);
         userService.logout(new LogoutRequest(registerResult.authToken()));
         registerRequest = new RegisterRequest("username1", "password", "email1@email.com");
         registerResult = userService.register(registerRequest);
-        JoinRequest joinRequest2  = new JoinRequest(registerResult.authToken(), 0, "WHITE");
+        JoinRequest joinRequest2  = new JoinRequest(registerResult.authToken(), 1, "WHITE");
         JoinResult result2 = service.joinGames(joinRequest2);
 
         // test

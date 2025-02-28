@@ -41,7 +41,7 @@ public class GameService extends Service{
         // authorize first
         try {
             if (authorize(request.getAuthToken()) != null) {
-                if (request.getGameName().equals("")) {
+                if (request.getGameName().isEmpty()) {
                     return new CreateResult("Error: bad request");
                 }
                 GameData game = new GameData(request.getGameName());
@@ -72,11 +72,12 @@ public class GameService extends Service{
         if (authData == null) {
             return new JoinResult("Error: unauthorized");
         } else {
-            if (request.getGameID() < 0) {
+            if (request.getGameID() == null || request.getGameID() <= 0) {
                 return new JoinResult("Error: bad request");
             }
             try {
-                if (request.getPlayerColor().equals("WHITE") || request.getPlayerColor().equals("BLACK")) {
+                if (request.getPlayerColor() != null &&
+                        (request.getPlayerColor().equals("WHITE") || request.getPlayerColor().equals("BLACK"))) {
                     boolean notTaken = dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
                     if (!notTaken) {
                         return new JoinResult("Error: already taken");

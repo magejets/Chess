@@ -18,8 +18,9 @@ public class UserService extends Service{
 
     public RegisterResult register(RegisterRequest request) {
 
-        if (request.username().equals("") || request.password().equals("") || request.email().equals("")) {
-            return new RegisterResult(request.username(), "", "Error: bad request");
+        if (request.username() == null || request.password() == null || request.email() == null ||
+                request.username().isEmpty() || request.password().isEmpty() || request.email().isEmpty()) {
+            return new RegisterResult("Error: bad request");
         }
 
         UserData newUser = new UserData(request);
@@ -27,10 +28,10 @@ public class UserService extends Service{
             if (dataAccess.getUser(request.username()) == null) {
                 dataAccess.createUser(newUser);
             } else {
-                return new RegisterResult(request.username(), "", "Error: already taken");
+                return new RegisterResult("Error: already taken");
             }
         } catch (DataAccessException e) {
-            return new RegisterResult(request.username(), "", "Error: Data Access Exception");
+            return new RegisterResult("Error: Data Access Exception");
         }
 
         return new RegisterResult(login(new LoginRequest(request)));
@@ -45,13 +46,15 @@ public class UserService extends Service{
         }
         AuthData authData = new AuthData();
         if (user == null) {
-            return new LoginResult(request.username(), "", "Error: unauthorized");
+            return new LoginResult("Error: unauthorized");
         } else if (request.password().equals(user.password())) {
             try {
                 authData = authDataAccess.createAuth(user.username());
-            } catch (DataAccessException e) {}
+            } catch (DataAccessException e) {
+                return new LoginResult("Error: Data Access Exception");
+            }
         } else {
-            return new LoginResult(request.username(), "", "Error: unauthorized");
+            return new LoginResult("Error: unauthorized");
         }
 
         return new LoginResult(request.username(), authData.authToken());

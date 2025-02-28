@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MemoryGameDao implements GameDao{
     static HashMap<Integer, GameData> gameList = new HashMap<Integer, GameData>();
-    static int lastIndex = 0;
+    static int lastIndex = 1;
 
     public List<GameData> getGames() throws DataAccessException {
         return new ArrayList<GameData>(gameList.values());
@@ -28,7 +28,7 @@ public class MemoryGameDao implements GameDao{
         }
         GameData updatedGame;
         if (playerColor.equals("WHITE") ?
-                (oldGame.getWhiteUsername().equals("")) : (oldGame.getBlackUsername().equals(""))) {
+                (oldGame.getWhiteUsername() == null) : (oldGame.getBlackUsername() == null)) {
              updatedGame = new GameData(gameID, playerColor.equals("WHITE") ? username : oldGame.getWhiteUsername(),
                     playerColor.equals("BLACK") ? username : oldGame.getBlackUsername(),
                     oldGame.getGameName(), oldGame.getGame());
@@ -42,6 +42,6 @@ public class MemoryGameDao implements GameDao{
 
     public void clear() throws DataAccessException {
         gameList.clear();
-        lastIndex = 0;
+        lastIndex = 1;
     }
 }
