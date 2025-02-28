@@ -6,7 +6,7 @@ import model.UserData;
 import java.util.HashMap;
 
 public class MemoryUserDao implements UserDao {
-    private static final HashMap<String, UserData> database = new HashMap<>();
+    private static HashMap<String, UserData> database = new HashMap<>();
 
 
     public UserData getUser(String username) throws DataAccessException {

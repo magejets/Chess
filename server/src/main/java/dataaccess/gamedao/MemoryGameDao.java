@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MemoryGameDao implements GameDao{
-    final static HashMap<Integer, GameData> gameList = new HashMap<>();
+    static HashMap<Integer, GameData> gameList = new HashMap<>();
     static int lastIndex = 1;
 
     public List<GameData> getGames() throws DataAccessException {
