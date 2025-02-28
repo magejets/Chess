@@ -2,9 +2,9 @@ package result;
 
 
 public class RegisterResult{
-    private String username;
-    private String authToken;
-    transient private String message;
+    private final String username;
+    private final String authToken;
+    final transient private String message;
 
     public RegisterResult(String username, String authToken, String message){
         this.username = username;

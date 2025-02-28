@@ -1,7 +1,6 @@
 package model;
 
 import chess.ChessGame;
-import request.CreateRequest;
 
 import java.util.Objects;
 
@@ -76,7 +75,7 @@ public class GameData {
         GameData gameData = (GameData) o;
         return getGameID() == gameData.getGameID() && Objects.equals(getWhiteUsername(), gameData.getWhiteUsername()) &&
                 Objects.equals(getBlackUsername(), gameData.getBlackUsername()) && Objects.equals(getGameName(),
-                gameData.getGameName()); // I left of the game equals because it was messing up my tests
+                gameData.getGameName());
     }
 
     @Override

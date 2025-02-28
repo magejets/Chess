@@ -13,16 +13,19 @@ public class LoginHandler implements Route {
         var request = new Gson().fromJson(req.body(), LoginRequest.class);
         var service = new UserService();
         LoginResult result = service.login(request);
-        switch (result.message()) {
-            case "Error: unauthorized":
+        return switch (result.message()) {
+            case "Error: unauthorized" -> {
                 res.status(401);
-                return "{ \"message\": \"Error: unauthorized\" }";
-            case "Error: Data Access Exception":
+                yield "{ \"message\": \"Error: unauthorized\" }";
+            }
+            case "Error: Data Access Exception" -> {
                 res.status(500);
-                return "{ \"message\": \"Error: Data Access Exception\" }";
-            case null, default:
+                yield "{ \"message\": \"Error: Data Access Exception\" }";
+            }
+            case null, default -> {
                 res.status(200);
-                return new Gson().toJson(result, LoginResult.class);
-        }
+                yield new Gson().toJson(result, LoginResult.class);
+            }
+        };
     }
 }

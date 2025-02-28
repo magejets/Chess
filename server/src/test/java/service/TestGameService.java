@@ -76,7 +76,7 @@ public class TestGameService {
 
         // run the function
         CreateResult result = service.createGame(request);
-        GameData actualGame = service.listGames(listRequest).getGames().getFirst();
+        GameData actualGame = service.listGames(listRequest).games().getFirst();
 
         // test
         Assertions.assertEquals(1, result.gameID());
@@ -141,7 +141,7 @@ public class TestGameService {
 
         // run the function
         ListRequest listRequest = new ListRequest(registerResult.authToken());
-        List<GameData> actualGames = service.listGames(listRequest).getGames();
+        List<GameData> actualGames = service.listGames(listRequest).games();
 
         // test
         Assertions.assertEquals(1, result.gameID());
@@ -198,7 +198,7 @@ public class TestGameService {
 
         // test
         ListRequest listRequest = new ListRequest(registerResult.authToken());
-        List<GameData> actualGames = service.listGames(listRequest).getGames();
+        List<GameData> actualGames = service.listGames(listRequest).games();
         Assertions.assertEquals("", result1.message());
         Assertions.assertEquals("", result2.message());
         Assertions.assertEquals(expectedGames, actualGames);
@@ -225,7 +225,7 @@ public class TestGameService {
 
         // test
         ListRequest listRequest = new ListRequest(registerResult.authToken());
-        List<GameData> actualGames = service.listGames(listRequest).getGames();
+        List<GameData> actualGames = service.listGames(listRequest).games();
         Assertions.assertEquals("Error: unauthorized", result1.message());
     }
 

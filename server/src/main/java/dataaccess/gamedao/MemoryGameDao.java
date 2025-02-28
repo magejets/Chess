@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MemoryGameDao implements GameDao{
-    static HashMap<Integer, GameData> gameList = new HashMap<Integer, GameData>();
+    final static HashMap<Integer, GameData> gameList = new HashMap<>();
     static int lastIndex = 1;
 
     public List<GameData> getGames() throws DataAccessException {
-        return new ArrayList<GameData>(gameList.values());
+        return new ArrayList<>(gameList.values());
     }
 
     public int createGame(GameData game) throws DataAccessException{

@@ -5,8 +5,8 @@ import model.GameData;
 import java.util.List;
 
 public class ListResult {
-    private List<GameData> games;
-    private transient String message;
+    private final List<GameData> games;
+    private final transient String message;
 
     public ListResult(List<GameData> gameList) {
         this.games = gameList;
@@ -17,7 +17,7 @@ public class ListResult {
         this.message = message;
     }
 
-    public List<GameData> getGames() {
+    public List<GameData> games() {
         return this.games;
     }
 

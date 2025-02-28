@@ -36,6 +36,8 @@ public class GameDaoTests {
 
     @Test
     public void testUpdateGame() {
+        ClearService clearService = new ClearService();
+        clearService.clear();
         GameDao testDao = new MemoryGameDao();
         GameData gameData = new GameData("myGame");
         int gameID = -1;

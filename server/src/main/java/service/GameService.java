@@ -11,17 +11,15 @@ import result.CreateResult;
 import result.JoinResult;
 import result.ListResult;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameService extends Service{
     final private MemoryGameDao dataAccess = new MemoryGameDao();
 
     public ListResult listGames(ListRequest request) {
-        // authorize first
         try {
             if (authorize(request.authToken()) != null) {
-                List<GameData> gameList = new ArrayList<>();
+                List<GameData> gameList;
                 try {
                     gameList = dataAccess.getGames();
                 } catch (DataAccessException e) {
@@ -38,14 +36,13 @@ public class GameService extends Service{
     }
 
     public CreateResult createGame(CreateRequest request) {
-        // authorize first
         try {
             if (authorize(request.getAuthToken()) != null) {
                 if (request.getGameName().isEmpty()) {
                     return new CreateResult("Error: bad request");
                 }
                 GameData game = new GameData(request.getGameName());
-                int gameID = -1; // initialized to a value it will never naturally be
+                int gameID;
                 try {
                     gameID = dataAccess.createGame(game);
                 } catch (DataAccessException e) {
@@ -62,7 +59,6 @@ public class GameService extends Service{
     }
 
     public JoinResult joinGames(JoinRequest request) {
-        // authorize first
         AuthData authData;
         try {
             authData = authorize(request.getAuthToken());

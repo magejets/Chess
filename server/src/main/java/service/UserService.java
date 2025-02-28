@@ -44,7 +44,7 @@ public class UserService extends Service{
         } catch (DataAccessException e) {
             user = new UserData();
         }
-        AuthData authData = new AuthData();
+        AuthData authData;
         if (user == null) {
             return new LoginResult("Error: unauthorized");
         } else if (request.password().equals(user.password())) {
@@ -61,8 +61,7 @@ public class UserService extends Service{
     }
 
     public LogoutResult logout(LogoutRequest request) {
-        // first verify the auth data
-        AuthData authData = null;
+        AuthData authData;
         try {
             authData = authorize(request.authToken());
         } catch (DataAccessException e) {

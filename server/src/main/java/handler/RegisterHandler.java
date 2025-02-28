@@ -11,19 +11,23 @@ public class RegisterHandler implements Route{
         var request = new Gson().fromJson(req.body(), RegisterRequest.class);
         var service = new UserService();
         RegisterResult result = service.register(request);
-        switch (result.message()) {
-            case "Error: already taken":
+        return switch (result.message()) {
+            case "Error: already taken" -> {
                 res.status(403);
-                return "{ \"message\": \"Error: already taken\" }";
-            case "Error: Data Access Exception": // this'll be more specific once we start using SQL
+                yield "{ \"message\": \"Error: already taken\" }";
+            }
+            case "Error: Data Access Exception" -> {
                 res.status(500);
-                return "{ \"message\": \"Error: Data Access Exception\" }";
-            case "Error: bad request":
+                yield "{ \"message\": \"Error: Data Access Exception\" }";
+            }
+            case "Error: bad request" -> {
                 res.status(400);
-                return "{ \"message\": \"Error: bad request\" }";
-            case null, default:
+                yield "{ \"message\": \"Error: bad request\" }";
+            }
+            case null, default -> {
                 res.status(200);
-                return new Gson().toJson(result, RegisterResult.class);
-        }
+                yield new Gson().toJson(result, RegisterResult.class);
+            }
+        };
     }
 }
