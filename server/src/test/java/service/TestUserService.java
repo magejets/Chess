@@ -14,7 +14,7 @@ import result.RegisterResult;
 
 public class TestUserService {
     @Test
-    public void TestRegisterPositive() {
+    public void testRegisterPositive() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -31,7 +31,7 @@ public class TestUserService {
     }
 
     @Test
-    public void TestRegisterNegative() {
+    public void testRegisterNegative() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -48,7 +48,7 @@ public class TestUserService {
     }
 
     @Test
-    public void TestRegisterNegativeBadRequest() {
+    public void testRegisterNegativeBadRequest() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -63,7 +63,7 @@ public class TestUserService {
     }
 
     @Test
-    public void TestLoginPositive() {
+    public void testLoginPositive() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -83,7 +83,7 @@ public class TestUserService {
     }
 
     @Test
-    public void TestLoginNegative() {
+    public void testLoginNegative() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -101,7 +101,7 @@ public class TestUserService {
     }
 
     @Test
-    public void TestLogoutPositive() {
+    public void testLogoutPositive() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -123,7 +123,7 @@ public class TestUserService {
     }
 
     @Test
-    public void TestLogoutNegative() {
+    public void testLogoutNegative() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -139,7 +139,7 @@ public class TestUserService {
     }
 
     @Test
-    public void TestAuthRandom() { // thanks James
+    public void testAuthRandom() { // thanks James
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();

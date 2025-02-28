@@ -17,7 +17,7 @@ import result.ClearResult;
 
 public class TestClearService {
     @Test
-    public void TestClearUsersPositive() {
+    public void testClearUsersPositive() {
         UserDao userDao = new MemoryUserDao();
         ClearService service = new ClearService();
         try {
@@ -34,7 +34,7 @@ public class TestClearService {
     }
 
     @Test
-    public void TestClearGamesPositive() {
+    public void testClearGamesPositive() {
         GameDao gameDao = new MemoryGameDao();
         ClearService service = new ClearService();
         try {
@@ -49,7 +49,7 @@ public class TestClearService {
     }
 
     @Test
-    public void TestClearAuthPositive() {
+    public void testClearAuthPositive() {
         AuthDao authDao = new MemoryAuthDao();
         ClearService service = new ClearService();
         try {

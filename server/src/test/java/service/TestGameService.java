@@ -17,7 +17,7 @@ import java.util.List;
 
 public class TestGameService {
     @Test
-    public void TestAuthorizePositive() { // though it is for all the services we'll test it here in Game Service
+    public void testAuthorizePositive() { // though it is for all the services we'll test it here in Game Service
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -39,7 +39,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestAuthorizeNegative() { // though it is for all the services we'll test it here in Game Service
+    public void testAuthorizeNegative() { // though it is for all the services we'll test it here in Game Service
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -62,7 +62,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestCreateGamePositive() {
+    public void testCreateGamePositive() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -84,7 +84,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestCreateGameNegative() {
+    public void testCreateGameNegative() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -103,7 +103,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestCreateGameNegativeBadRequest() {
+    public void testCreateGameNegativeBadRequest() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -121,7 +121,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestListGamesPositive() {
+    public void testListGamesPositive() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -150,7 +150,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestListGamesNegative() {
+    public void testListGamesNegative() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -173,7 +173,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestJoinGamePositive() {
+    public void testJoinGamePositive() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -205,7 +205,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestJoinGameNegativeUnauthorized() {
+    public void testJoinGameNegativeUnauthorized() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -230,7 +230,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestJoinGameNegativeBadColor() {
+    public void testJoinGameNegativeBadColor() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -252,7 +252,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestJoinGameNegativeBadGameID() {
+    public void testJoinGameNegativeBadGameID() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -274,7 +274,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestJoinGameNegativeIDNoExist() {
+    public void testJoinGameNegativeIDNoExist() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
@@ -296,7 +296,7 @@ public class TestGameService {
     }
 
     @Test
-    public void TestJoinGameNegativeTaken() {
+    public void testJoinGameNegativeTaken() {
         // setup
         ClearService clearService = new ClearService();
         clearService.clear();
