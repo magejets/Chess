@@ -18,18 +18,13 @@ public class GameService extends Service{
 
     public ListResult listGames(ListRequest request) {
         try {
-            if (authorize(request.authToken()) != null) {
-                List<GameData> gameList;
-                try {
-                    gameList = dataAccess.getGames();
-                } catch (DataAccessException e) {
-                    return new ListResult(e.getMessage());
-                }
-
-                return new ListResult(gameList);
-            } else {
+            if (authorize(request.authToken()) == null) {
                 return new ListResult("Error: unauthorized");
             }
+            List<GameData> gameList;
+            gameList = dataAccess.getGames();
+
+            return new ListResult(gameList);
         } catch (DataAccessException e) {
             return new ListResult(e.getMessage());
         }
@@ -37,22 +32,17 @@ public class GameService extends Service{
 
     public CreateResult createGame(CreateRequest request) {
         try {
-            if (authorize(request.getAuthToken()) != null) {
-                if (request.getGameName().isEmpty()) {
-                    return new CreateResult("Error: bad request");
-                }
-                GameData game = new GameData(request.getGameName());
-                int gameID;
-                try {
-                    gameID = dataAccess.createGame(game);
-                } catch (DataAccessException e) {
-                    return new CreateResult(e.getMessage());
-                }
-
-                return new CreateResult(gameID);
-            } else {
+            if (authorize(request.getAuthToken()) == null) {
                 return new CreateResult("Error: unauthorized");
             }
+            if (request.getGameName().isEmpty()) {
+                return new CreateResult("Error: bad request");
+            }
+            GameData game = new GameData(request.getGameName());
+            int gameID;
+            gameID = dataAccess.createGame(game);
+
+            return new CreateResult(gameID);
         } catch (DataAccessException e) {
             return new CreateResult(e.getMessage());
         }
@@ -62,28 +52,26 @@ public class GameService extends Service{
         AuthData authData;
         try {
             authData = authorize(request.getAuthToken());
-        } catch (DataAccessException e) {
-            return new JoinResult(e.getMessage());
-        }
-        if (authData == null) {
-            return new JoinResult("Error: unauthorized");
-        } else {
-            if (request.getGameID() == null || request.getGameID() <= 0) {
-                return new JoinResult("Error: bad request");
-            }
-            try {
-                if (request.getPlayerColor() != null &&
-                        (request.getPlayerColor().equals("WHITE") || request.getPlayerColor().equals("BLACK"))) {
-                    boolean notTaken = dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
-                    if (!notTaken) {
-                        return new JoinResult("Error: already taken");
-                    }
-                } else {
+            if (authData == null) {
+                return new JoinResult("Error: unauthorized");
+            } else {
+                if (request.getGameID() == null || request.getGameID() <= 0) {
                     return new JoinResult("Error: bad request");
                 }
-            } catch (DataAccessException e) {
-                return new JoinResult(e.getMessage());
+
+                    if (request.getPlayerColor() != null &&
+                            (request.getPlayerColor().equals("WHITE") || request.getPlayerColor().equals("BLACK"))) {
+                        boolean notTaken = dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
+                        if (!notTaken) {
+                            return new JoinResult("Error: already taken");
+                        }
+                    } else {
+                        return new JoinResult("Error: bad request");
+                    }
+
             }
+        } catch (DataAccessException e) {
+            return new JoinResult(e.getMessage());
         }
 
         return new JoinResult("");

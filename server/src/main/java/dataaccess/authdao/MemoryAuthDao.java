@@ -10,7 +10,6 @@ public class MemoryAuthDao implements AuthDao{
     private static HashMap<String, AuthData> database = new HashMap<>();
 
     public AuthData getAuth(String authToken) throws DataAccessException {
-
         return database.get(authToken);
     }
 

@@ -33,7 +33,11 @@ public class UserService extends Service{
         } catch (DataAccessException e) {
             return new RegisterResult("Error: Data Access Exception");
         }
-
+//        try {
+//            authData = authDataAccess.createAuth(user.username());
+//        } catch (DataAccessException e) {
+//            return new LoginResult("Error: Data Access Exception");
+//        }
         return new RegisterResult(login(new LoginRequest(request)));
     }
 

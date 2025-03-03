@@ -27,7 +27,7 @@ public class MemoryGameDao implements GameDao{
             throw new DataAccessException("Error: game does not exist");
         }
         GameData updatedGame;
-        if (playerColor.equals("WHITE") ?
+        if (playerColor.equals("WHITE") ? // put this logic in the service joinGames
                 (oldGame.getWhiteUsername() == null) : (oldGame.getBlackUsername() == null)) {
              updatedGame = new GameData(gameID, playerColor.equals("WHITE") ? username : oldGame.getWhiteUsername(),
                     playerColor.equals("BLACK") ? username : oldGame.getBlackUsername(),

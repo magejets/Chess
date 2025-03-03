@@ -33,7 +33,7 @@ public class JoinHandler implements Route {
             }
             case null, default -> {
                 res.status(200);
-                yield new Gson().toJson(result, JoinResult.class);
+                yield "{}";
             }
         };
     }
