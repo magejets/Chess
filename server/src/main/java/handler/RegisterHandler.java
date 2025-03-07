@@ -1,5 +1,7 @@
 package handler;
 
+import dataaccess.authdao.AuthDao;
+import dataaccess.userdao.UserDao;
 import result.RegisterResult;
 import spark.*;
 import com.google.gson.Gson;
@@ -7,9 +9,14 @@ import request.RegisterRequest;
 import service.UserService;
 
 public class RegisterHandler implements Route{
+    private UserService service;
+
+    public RegisterHandler(UserService userService) {
+        this.service = userService;
+    }
+
     public String handle(Request req, Response res) {
         var request = new Gson().fromJson(req.body(), RegisterRequest.class);
-        var service = new UserService();
         RegisterResult result = service.register(request);
         return switch (result.message()) {
             case "Error: already taken" -> {

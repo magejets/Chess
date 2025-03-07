@@ -1,6 +1,8 @@
 package handler;
 
 import com.google.gson.Gson;
+import dataaccess.authdao.AuthDao;
+import dataaccess.userdao.UserDao;
 import request.LoginRequest;
 import result.LoginResult;
 import service.UserService;
@@ -9,9 +11,14 @@ import spark.Response;
 import spark.Route;
 
 public class LoginHandler implements Route {
+    private UserService service;
+
+    public LoginHandler(UserService userService) {
+        this.service = userService;
+    }
+
     public String handle(Request req, Response res) {
         var request = new Gson().fromJson(req.body(), LoginRequest.class);
-        var service = new UserService();
         LoginResult result = service.login(request);
         return switch (result.message()) {
             case "Error: unauthorized" -> {

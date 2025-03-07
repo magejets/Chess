@@ -2,7 +2,11 @@ package service;
 
 
 import dataaccess.DataAccessException;
+import dataaccess.authdao.AuthDao;
+import dataaccess.authdao.MemoryAuthDao;
+import dataaccess.authdao.SQLAuthDao;
 import dataaccess.userdao.MemoryUserDao;
+import dataaccess.userdao.SQLUserDao;
 import dataaccess.userdao.UserDao;
 import model.AuthData;
 import model.UserData;
@@ -14,7 +18,18 @@ import result.LogoutResult;
 import result.RegisterResult;
 
 public class UserService extends Service{
-    final private UserDao dataAccess = new MemoryUserDao();
+    private UserDao dataAccess;
+
+    public UserService(UserDao userDao, AuthDao authDao) {
+        super(authDao);
+        this.dataAccess = userDao;
+    }
+
+    // the following constructor is for the tests only and when NOT working with http
+    public UserService() {
+        super(new SQLAuthDao());
+        this.dataAccess = new SQLUserDao();
+    }
 
     public RegisterResult register(RegisterRequest request) {
 

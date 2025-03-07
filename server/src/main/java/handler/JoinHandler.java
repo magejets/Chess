@@ -9,10 +9,15 @@ import spark.Response;
 import spark.Route;
 
 public class JoinHandler implements Route {
+    private GameService service;
+
+    public JoinHandler(GameService gameService) {
+        this.service = gameService;
+    }
+
     public String handle(Request req, Response res) {
         var request = new Gson().fromJson(req.body(), JoinRequest.class);
         request.setAuthToken(req.headers("Authorization"));
-        var service = new GameService();
         JoinResult result = service.joinGames(request);
         return switch (result.message()) {
             case "Error: unauthorized" -> {

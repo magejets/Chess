@@ -9,9 +9,14 @@ import spark.Response;
 import spark.Route;
 
 public class LogoutHandler implements Route {
+    private UserService service;
+
+    public LogoutHandler(UserService userService) {
+        this.service = userService;
+    }
+
     public String handle(Request req, Response res) {
         var request = new LogoutRequest(req.headers("Authorization"));
-        var service = new UserService();
         LogoutResult result = service.logout(request);
         return switch (result.message()) {
             case "Error: unauthorized" -> {

@@ -1,7 +1,13 @@
 package service;
 
 import dataaccess.DataAccessException;
+import dataaccess.authdao.AuthDao;
+import dataaccess.authdao.MemoryAuthDao;
+import dataaccess.authdao.SQLAuthDao;
+import dataaccess.gamedao.GameDao;
 import dataaccess.gamedao.MemoryGameDao;
+import dataaccess.gamedao.SQLGameDao;
+import dataaccess.userdao.SQLUserDao;
 import model.AuthData;
 import model.GameData;
 import request.CreateRequest;
@@ -14,7 +20,18 @@ import result.ListResult;
 import java.util.List;
 
 public class GameService extends Service{
-    final private MemoryGameDao dataAccess = new MemoryGameDao();
+    private GameDao dataAccess;
+
+    public GameService(AuthDao authDao, GameDao gameDao) {
+        super(authDao);
+        this.dataAccess = gameDao;
+    }
+
+    // the following constructor is for the tests only and when NOT working with http
+    public GameService() {
+        super(new SQLAuthDao());
+        this.dataAccess = new SQLGameDao();
+    }
 
     public ListResult listGames(ListRequest request) {
         try {
@@ -61,9 +78,16 @@ public class GameService extends Service{
 
                     if (request.getPlayerColor() != null &&
                             (request.getPlayerColor().equals("WHITE") || request.getPlayerColor().equals("BLACK"))) {
-                        boolean notTaken = dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
-                        if (!notTaken) {
-                            return new JoinResult("Error: already taken");
+
+                        GameData oldGame = dataAccess.getGame(request.getGameID());
+                        if (oldGame == null) {
+                            return new JoinResult("Error: game does not exist");
+                        }
+                        if (request.getPlayerColor().equals("WHITE") ?
+                                (oldGame.getWhiteUsername() == null) : (oldGame.getBlackUsername() == null)) {
+                           dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
+                        } else {
+                           return new JoinResult("Error: already taken");
                         }
                     } else {
                         return new JoinResult("Error: bad request");

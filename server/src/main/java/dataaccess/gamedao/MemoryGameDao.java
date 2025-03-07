@@ -15,29 +15,25 @@ public class MemoryGameDao implements GameDao{
         return new ArrayList<>(gameList.values());
     }
 
+    public GameData getGame(Integer gameID) {
+        return this.gameList.get(gameID);
+    }
+
     public int createGame(GameData game) throws DataAccessException{
         game.setGameID(lastIndex);
         gameList.put(lastIndex, game);
         return lastIndex++;
     }
 
-    public boolean updateGame(int gameID, String playerColor, String username) throws DataAccessException{
+    public void updateGame(int gameID, String playerColor, String username) throws DataAccessException{
         GameData oldGame = gameList.get(gameID);
         if (oldGame == null) {
             throw new DataAccessException("Error: game does not exist");
         }
-        GameData updatedGame;
-        if (playerColor.equals("WHITE") ? // put this logic in the service joinGames
-                (oldGame.getWhiteUsername() == null) : (oldGame.getBlackUsername() == null)) {
-             updatedGame = new GameData(gameID, playerColor.equals("WHITE") ? username : oldGame.getWhiteUsername(),
+        GameData updatedGame = new GameData(gameID, playerColor.equals("WHITE") ? username : oldGame.getWhiteUsername(),
                     playerColor.equals("BLACK") ? username : oldGame.getBlackUsername(),
                     oldGame.getGameName(), oldGame.getGame());
             gameList.put(gameID, updatedGame);
-            return true;
-        } else {
-            return false;
-        }
-
     }
 
     public void clear() throws DataAccessException {

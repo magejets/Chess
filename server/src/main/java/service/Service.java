@@ -6,7 +6,12 @@ import dataaccess.authdao.MemoryAuthDao;
 import model.AuthData;
 
 public class Service {
-    final AuthDao authDataAccess = new MemoryAuthDao();
+    protected AuthDao authDataAccess;
+
+    public Service(AuthDao authDao) {
+        this.authDataAccess = authDao;
+    }
+
     public AuthData authorize(String authToken) throws DataAccessException {
         return authDataAccess.getAuth(authToken);
     }
