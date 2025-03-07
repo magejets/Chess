@@ -33,4 +33,18 @@ public class UserDaoTests {
 
         }
     }
+
+    @Test
+    public void testClear() {
+        UserDao testDao = new SQLUserDao();
+        UserData user = new UserData("mage", "12345", "mage@cs240.com");
+        try {
+            testDao.createUser(user);
+            testDao.clear();
+            UserData gotUser = testDao.getUser("mage");
+            Assertions.assertNull(gotUser);
+        } catch (DataAccessException e) {
+
+        }
+    }
 }
