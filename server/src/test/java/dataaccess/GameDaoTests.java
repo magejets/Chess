@@ -71,4 +71,13 @@ public class GameDaoTests {
             Assertions.fail(e.getMessage());
         }
     }
+
+    @Test
+    public void testCreateNegative() {
+        try {
+            testDao.createGame(new GameData(0, null, "", null, new ChessGame()));
+        } catch (DataAccessException e) {
+            Assertions.assertEquals("Column 'gameName' cannot be null", e.getMessage());
+        }
+    }
 }
