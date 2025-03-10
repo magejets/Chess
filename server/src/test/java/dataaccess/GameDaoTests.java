@@ -80,4 +80,15 @@ public class GameDaoTests {
             Assertions.assertEquals("Column 'gameName' cannot be null", e.getMessage());
         }
     }
+
+    @Test
+    public void testGetGamesNegative() {
+        try {
+            testDao.clear();
+            List<GameData> gotGames = testDao.getGames(); // if no games are there then it should return an empty list
+            Assertions.assertEquals(new ArrayList<GameData>(), gotGames);
+        } catch (DataAccessException e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
 }
