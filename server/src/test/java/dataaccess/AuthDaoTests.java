@@ -76,5 +76,15 @@ public class AuthDaoTests {
             Assertions.assertEquals(e.getMessage(), "Column 'username' cannot be null");
         }
     }
+
+    @Test
+    public void testGetNegative() {
+        try {
+            AuthData authDataBad = testDao.getAuth("invalid-auth-token");
+            Assertions.assertNull(authDataBad);
+        } catch (DataAccessException e) {
+
+        }
+    }
 }
 
