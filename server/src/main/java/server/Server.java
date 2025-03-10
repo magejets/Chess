@@ -18,6 +18,21 @@ import com.google.gson.Gson;
 import java.util.List;
 
 public class Server {
+    static private UserDao userDao;
+    static private AuthDao authDao;
+    static private GameDao gameDao;
+
+    public Server(UserDao ud, AuthDao ad, GameDao gd) {
+        userDao = ud;
+        authDao = ad;
+        gameDao = gd;
+    }
+
+    public Server() { // this constructor is for the tests
+        userDao = new SQLUserDao();
+        authDao = new SQLAuthDao();
+        gameDao = new SQLGameDao();
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -34,11 +49,6 @@ public class Server {
     }
 
     private static void createRoutes() {
-        // Create the data access classes
-        UserDao userDao = new SQLUserDao(); // the configureDatabase is called in this constructor
-        AuthDao authDao = new SQLAuthDao();
-        GameDao gameDao = new SQLGameDao();
-
         // Create the services
         UserService  userService  = new UserService(userDao, authDao);
         GameService  gameService  = new GameService(authDao, gameDao);
