@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import model.GameData;
-import result.ListResult;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -15,7 +14,7 @@ import java.util.List;
 
 public class SQLGameDao implements GameDao{
     public List<GameData> getGames() throws DataAccessException {
-        ArrayList<GameData> result = new ArrayList<GameData>();
+        ArrayList<GameData> result = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT id, whiteUsername, blackUsername, gameName, game FROM game";
             try (var ps = conn.prepareStatement(statement)) {
@@ -30,8 +29,8 @@ public class SQLGameDao implements GameDao{
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
         return result;
-        // SELECT * FROM game
     }
+
     public int createGame(GameData game) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "INSERT into game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
@@ -51,8 +50,8 @@ public class SQLGameDao implements GameDao{
             throw new DataAccessException(e.getMessage());
         }
         return 0;
-        // INSERT INTO game (*) VALUES (*)
     }
+
     public GameData getGame(Integer gameID) throws DataAccessException{
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT id, whiteUsername, blackUsername, gameName, game FROM game WHERE id=?";
@@ -69,8 +68,8 @@ public class SQLGameDao implements GameDao{
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
-        // SELECT * FROM games WHERE ID = @gameID
     }
+
     public int updateGame(int gameID, String playerColor, String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             String statement;
@@ -82,7 +81,6 @@ public class SQLGameDao implements GameDao{
                 throw new DataAccessException("illegal color");
             }
             try (var ps = conn.prepareStatement(statement)) {
-                //ps.setString(1, playerColor.equals("WHITE") ? "whiteUsername" : "blackUsername");
                 ps.setString(1, username);
                 ps.setInt(2, gameID);
                 return ps.executeUpdate();
@@ -90,8 +88,8 @@ public class SQLGameDao implements GameDao{
         } catch (Exception e) {
             throw new DataAccessException(e.getMessage());
         }
-        // UPDATE game SET whiteusername/blackusername = @username WHERE ID = @gameID
     }
+
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "TRUNCATE game";

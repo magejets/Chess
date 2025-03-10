@@ -3,7 +3,6 @@ package dataaccess.authdao;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import model.AuthData;
-import model.UserData;
 
 import java.util.UUID;
 
@@ -21,7 +20,6 @@ public class SQLAuthDao implements AuthDao{
             throw new DataAccessException(e.getMessage());
         }
         return authData;
-        // INSERT INTO auth (authToken, username) VALUES (@authToken, @username)
     }
 
     public int removeAuth(String authToken) throws DataAccessException {
@@ -34,8 +32,8 @@ public class SQLAuthDao implements AuthDao{
         } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
-        // DELETE FROM auth WHERE authToken = @authToken
     }
+
     public AuthData getAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT authToken, username FROM auth WHERE authToken = ?";
@@ -51,8 +49,8 @@ public class SQLAuthDao implements AuthDao{
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
         return null;
-        // SELECT authToken, username FROM auth WHERE authToken = @authToken
     }
+
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "TRUNCATE auth";
@@ -62,6 +60,5 @@ public class SQLAuthDao implements AuthDao{
         } catch (Exception e) {
             throw new DataAccessException(e.getMessage());
         }
-        // DELETE FROM auth
     }
 }

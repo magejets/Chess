@@ -1,6 +1,5 @@
 package dataaccess.userdao;
 
-import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import model.UserData;
@@ -11,7 +10,7 @@ public class SQLUserDao implements UserDao{
         try {
             DatabaseManager.configureDatabase();
         } catch (DataAccessException e) {
-
+            assert false;
         }
     }
 
