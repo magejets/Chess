@@ -54,4 +54,24 @@ public class UserDaoTests {
             Assertions.fail("Data Access Error");
         }
     }
+
+    @Test
+    public void testCreateNegative() {
+        try {
+            testDao.createUser(new UserData(null, null, null));
+            Assertions.fail();
+        } catch (DataAccessException e) {
+            Assertions.assertEquals("Column 'username' cannot be null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetNegative() {
+        try {
+            UserData gotUser = testDao.getUser("non-existent-user");
+            Assertions.assertNull(gotUser);
+        } catch (DataAccessException e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
 }
