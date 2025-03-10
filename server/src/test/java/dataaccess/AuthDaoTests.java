@@ -67,5 +67,14 @@ public class AuthDaoTests {
 
         }
     }
+
+    @Test
+    public void testCreateNegative() {
+        try {
+            testDao.createAuth(null);
+        } catch (DataAccessException e) {
+            Assertions.assertEquals(e.getMessage(), "Column 'username' cannot be null");
+        }
+    }
 }
 
