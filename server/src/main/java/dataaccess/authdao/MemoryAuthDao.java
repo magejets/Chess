@@ -13,8 +13,9 @@ public class MemoryAuthDao implements AuthDao{
         return database.get(authToken);
     }
 
-    public void removeAuth(String authToken) throws DataAccessException {
+    public int removeAuth(String authToken) throws DataAccessException {
         database.remove(authToken);
+        return 0;
     }
 
     public AuthData createAuth(String username) throws DataAccessException {

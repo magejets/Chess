@@ -86,5 +86,15 @@ public class AuthDaoTests {
 
         }
     }
+
+    @Test
+    public void testRemoveNegative() {
+        try {
+            int rowsRemoved = testDao.removeAuth("invalid-auth-token");
+            Assertions.assertEquals(0, rowsRemoved);
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
 }
 

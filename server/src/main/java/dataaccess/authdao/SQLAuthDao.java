@@ -23,12 +23,13 @@ public class SQLAuthDao implements AuthDao{
         return authData;
         // INSERT INTO auth (authToken, username) VALUES (@authToken, @username)
     }
-    public void removeAuth(String authToken) throws DataAccessException {
+
+    public int removeAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "DELETE FROM auth WHERE authToken = ?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
-                ps.executeUpdate();
+                return ps.executeUpdate();
             }
         } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
