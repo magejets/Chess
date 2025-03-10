@@ -2,58 +2,73 @@ package dataaccess;
 
 import chess.ChessGame;
 import dataaccess.gamedao.GameDao;
-import dataaccess.gamedao.MemoryGameDao;
+import dataaccess.gamedao.SQLGameDao;
+import dataaccess.userdao.SQLUserDao;
+import dataaccess.userdao.UserDao;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.ClearService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameDaoTests {
-    @Test
-    public void testCreateAndGetGame() {
-        ClearService clearService = new ClearService();
-        clearService.clear();
-        GameDao testDao = new MemoryGameDao();
-        GameData gameData = new GameData("myGame");
-        int gameID = -1;
-        try {
-            gameID = testDao.createGame(gameData);
-        } catch (DataAccessException e) {
 
-        }
+public class GameDaoTests {
+    @BeforeAll
+    public static void init() {
+        UserDao initialize = new SQLUserDao(); // to initialize the database
+    }
+    // make a before each that does the clearing. just remove all duplicate code
+    GameDao testDao = new SQLGameDao();
+    GameData gameData = new GameData("myGame");
+    int gameID;
+
+    @BeforeEach
+    public void testInit() {
         try {
-            List<GameData> gotData = testDao.getGames();
-            List<GameData> expected = new ArrayList<>();
-            expected.add(new GameData(1, null, null, "myGame", new ChessGame()));
-            Assertions.assertEquals(gotData.get(gameID - 1), expected.get(gameID - 1));
+            testDao.clear();
+            gameID = testDao.createGame(new GameData("game"));
         } catch (DataAccessException e) {
 
         }
     }
 
     @Test
-    public void testUpdateGame() {
-        ClearService clearService = new ClearService();
-        clearService.clear();
-        GameDao testDao = new MemoryGameDao();
-        GameData gameData = new GameData("myGame");
-        int gameID = -1;
+    public void testCreateAndGetGame() {
         try {
-            gameID = testDao.createGame(gameData);
+            GameData gotData = testDao.getGame(gameID);
+            GameData expected = new GameData(1, null, null, "game", new ChessGame());
+            Assertions.assertEquals(gotData, expected);
         } catch (DataAccessException e) {
-
+            Assertions.fail("data access error");
         }
+    }
+
+    @Test
+    public void testGetGames() {
         try {
-            testDao.updateGame(gameID, "WHITE", "george");
+            testDao.createGame(new GameData("game2"));
             List<GameData> gotData = testDao.getGames();
             List<GameData> expected = new ArrayList<>();
-            expected.add(new GameData(1, "george", null, "myGame", new ChessGame()));
-            Assertions.assertEquals(gotData.get(gameID - 1), expected.get(gameID - 1));
+            expected.add(new GameData(1, null, null, "game", new ChessGame()));
+            expected.add(new GameData(2, null, null, "game2", new ChessGame()));
+            Assertions.assertEquals(gotData, expected);
         } catch (DataAccessException e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
 
+    @Test
+    public void testUpdateGame() {
+        try {
+            testDao.updateGame(gameID, "WHITE", "george");
+            GameData gotData = testDao.getGame(gameID);
+            GameData expected = new GameData(1, "george", null, "game", new ChessGame());
+            Assertions.assertEquals(gotData, expected);
+        } catch (DataAccessException e) {
+            Assertions.fail(e.getMessage());
         }
     }
 }

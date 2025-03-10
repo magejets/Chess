@@ -3,10 +3,10 @@ package service;
 import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.authdao.AuthDao;
-import dataaccess.authdao.MemoryAuthDao;
+import dataaccess.authdao.SQLAuthDao;
 import dataaccess.gamedao.GameDao;
-import dataaccess.gamedao.MemoryGameDao;
-import dataaccess.userdao.MemoryUserDao;
+import dataaccess.gamedao.SQLGameDao;
+import dataaccess.userdao.SQLUserDao;
 import dataaccess.userdao.UserDao;
 import model.AuthData;
 import model.GameData;
@@ -16,10 +16,13 @@ import org.junit.jupiter.api.Test;
 import result.ClearResult;
 
 public class TestClearService {
+    UserDao userDao = new SQLUserDao();
+    AuthDao authDao = new SQLAuthDao();
+    GameDao gameDao = new SQLGameDao();
+    ClearService service = new ClearService(userDao, authDao, gameDao);
+
     @Test
     public void testClearUsersPositive() {
-        UserDao userDao = new MemoryUserDao();
-        ClearService service = new ClearService();
         try {
             userDao.createUser(new UserData("username", "password", "email@email.com"));
             userDao.createUser(new UserData("username1", "password", "email1@email.com"));
@@ -35,7 +38,6 @@ public class TestClearService {
 
     @Test
     public void testClearGamesPositive() {
-        GameDao gameDao = new MemoryGameDao();
         ClearService service = new ClearService();
         try {
             gameDao.createGame(new GameData(0, "", "", "myGame", new ChessGame()));
@@ -50,7 +52,6 @@ public class TestClearService {
 
     @Test
     public void testClearAuthPositive() {
-        AuthDao authDao = new MemoryAuthDao();
         ClearService service = new ClearService();
         try {
             AuthData token1 = authDao.createAuth("user1");
