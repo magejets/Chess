@@ -205,16 +205,6 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-//        StringBuilder returnVal = new StringBuilder("Board:\n  | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |\n");
-//        for (int i = 7; i >= 0; i--) {
-//            returnVal.append(i + 1);
-//            for (int j = 0; j < 8; j++) {
-//                returnVal.append(" | ");
-//                returnVal.append(this.board[i][j]);
-//            }
-//            returnVal.append(" |\n");
-//        }
-//        return returnVal.toString();
         StringBuilder returnVal = new StringBuilder("[");
         for (int i = 0; i < 8; i++) {
             returnVal.append("[ ");
@@ -232,6 +222,5 @@ public class ChessBoard {
         }
         returnVal.append("]");
         return returnVal.toString();
-        //return Arrays.toString(this.board);
     }
 }
