@@ -91,4 +91,35 @@ public class GameDaoTests {
             Assertions.fail(e.getMessage());
         }
     }
+
+    @Test
+    public void testGetGameNegative() {
+        try {
+            GameData gotGame = testDao.getGame(2);
+            Assertions.assertNull(gotGame);
+        } catch (DataAccessException e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateGameNegative() {
+        try {
+            testDao.updateGame(1, "Green", null);
+        } catch (DataAccessException e) {
+            Assertions.assertEquals("illegal color",e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdateGameNegativeID() {
+        try {
+            int rowsUpdated = testDao.updateGame(2, "WHITE", "test"); // non existent game ID
+            Assertions.assertEquals(0, rowsUpdated);
+        } catch (DataAccessException e) {
+            Assertions.fail(e.getMessage());
+        }
+    }
+
+
 }

@@ -71,7 +71,7 @@ public class SQLGameDao implements GameDao{
         return null;
         // SELECT * FROM games WHERE ID = @gameID
     }
-    public void updateGame(int gameID, String playerColor, String username) throws DataAccessException {
+    public int updateGame(int gameID, String playerColor, String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             String statement;
             if (playerColor.equals("WHITE")) {
@@ -85,7 +85,7 @@ public class SQLGameDao implements GameDao{
                 //ps.setString(1, playerColor.equals("WHITE") ? "whiteUsername" : "blackUsername");
                 ps.setString(1, username);
                 ps.setInt(2, gameID);
-                ps.executeUpdate();
+                return ps.executeUpdate();
             }
         } catch (Exception e) {
             throw new DataAccessException(e.getMessage());
