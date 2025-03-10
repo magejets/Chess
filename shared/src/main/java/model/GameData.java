@@ -75,7 +75,7 @@ public class GameData {
         GameData gameData = (GameData) o;
         return getGameID() == gameData.getGameID() && Objects.equals(getWhiteUsername(), gameData.getWhiteUsername()) &&
                 Objects.equals(getBlackUsername(), gameData.getBlackUsername()) && Objects.equals(getGameName(),
-                gameData.getGameName());
+                gameData.getGameName()) && getGame().toString().equals(gameData.getGame().toString());
     }
 
     @Override

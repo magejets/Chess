@@ -328,7 +328,6 @@ public class ChessGame {
 
     @Override
     public String toString() {
-        return turn + "'s Turn\n\n" +
-                board;
+        return "{\n\t\"turn\" : " + turn + "\n\t\"board\" : " + board + "\n}";
     }
 }

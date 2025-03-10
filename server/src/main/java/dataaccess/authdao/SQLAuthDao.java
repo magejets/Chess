@@ -3,6 +3,7 @@ package dataaccess.authdao;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import model.AuthData;
+import model.UserData;
 
 import java.util.UUID;
 
@@ -23,13 +24,43 @@ public class SQLAuthDao implements AuthDao{
         // INSERT INTO auth (authToken, username) VALUES (@authToken, @username)
     }
     public void removeAuth(String authToken) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "DELETE FROM auth WHERE authToken = ?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
         // DELETE FROM auth WHERE authToken = @authToken
     }
     public AuthData getAuth(String authToken) throws DataAccessException {
-        return new AuthData();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authToken, username FROM auth WHERE authToken = ?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new AuthData(rs.getString("authToken"), rs.getString("username"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
         // SELECT authToken, username FROM auth WHERE authToken = @authToken
     }
     public void clear() throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "TRUNCATE auth";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
         // DELETE FROM auth
     }
 }

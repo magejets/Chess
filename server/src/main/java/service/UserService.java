@@ -10,6 +10,7 @@ import dataaccess.userdao.SQLUserDao;
 import dataaccess.userdao.UserDao;
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
@@ -66,7 +67,7 @@ public class UserService extends Service{
         AuthData authData;
         if (user == null) {
             return new LoginResult("Error: unauthorized");
-        } else if (request.password().equals(user.password())) {
+        } else if (BCrypt.checkpw(request.password(), user.password())) {
             try {
                 authData = authDataAccess.createAuth(user.username());
             } catch (DataAccessException e) {
