@@ -84,7 +84,8 @@ public class GameService extends Service{
                             return new JoinResult("Error: game does not exist");
                         }
                         if (request.getPlayerColor().equals("WHITE") ?
-                                (oldGame.getWhiteUsername() == null) : (oldGame.getBlackUsername() == null)) {
+                                (oldGame.getWhiteUsername() == null || oldGame.getWhiteUsername().isEmpty()) :
+                                (oldGame.getBlackUsername() == null || oldGame.getBlackUsername().isEmpty())) {
                            dataAccess.updateGame(request.getGameID(), request.getPlayerColor(), authData.username());
                         } else {
                            return new JoinResult("Error: already taken");
