@@ -1,6 +1,6 @@
 package server;
 
-//import exception.ResponseException;
+//import exception.Exception.ResponseException;
 import dataaccess.authdao.AuthDao;
 import dataaccess.authdao.SQLAuthDao;
 import dataaccess.gamedao.GameDao;
