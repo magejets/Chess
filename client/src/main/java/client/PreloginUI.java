@@ -11,11 +11,19 @@ import ui.EscapeSequences;
 import java.util.Arrays;
 
 public class PreloginUI extends UI{
-    //private String serverUrl;
-    //private ServerFacade server;
+    private String userAuth;
 
     public PreloginUI(String serverUrl) {
         super(serverUrl);
+        userAuth = "";
+    }
+
+    public void setUserAuth(String userAuth) {
+        this.userAuth = userAuth;
+    }
+
+    public String getUserAuth() {
+        return userAuth;
     }
 
     @Override
@@ -43,6 +51,7 @@ public class PreloginUI extends UI{
 
     private String login(String... params) throws ResponseException{
         LoginResult result = server.login(new LoginRequest(params[0], params[1]));
+        this.setUserAuth(result.authToken());
         return "Logged in as " + params[0];
     }
 

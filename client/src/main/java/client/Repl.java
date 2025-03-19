@@ -39,6 +39,7 @@ public class Repl {
                 System.out.print(EscapeSequences.RESET_ALL + result);
                 if (result.startsWith(EscapeSequences.SET_TEXT_COLOR_WHITE + "Logged in as")) {
                     phase = "LOGGED_IN";
+                    postClient.setUserAuth(preClient.getUserAuth());
                 }
             } catch (Throwable e) {
                 var msg = e.toString();

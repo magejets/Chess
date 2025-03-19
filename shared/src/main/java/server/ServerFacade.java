@@ -25,6 +25,11 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, RegisterResult.class);
     }
 
+    public CreateResult create(CreateRequest request) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("POST", path, request, CreateResult.class);
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();

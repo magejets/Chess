@@ -17,7 +17,6 @@ public class CreateHandler implements Route {
 
     public String handle(Request req, Response res) {
         var request = new Gson().fromJson(req.body() , CreateRequest.class);
-        request.setAuthToken(req.headers("Authorization"));
         CreateResult result = service.createGame(request);
         return switch (result.message()) {
             case "Error: unauthorized" -> {
