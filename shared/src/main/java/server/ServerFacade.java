@@ -16,8 +16,13 @@ public class ServerFacade {
     }
 
     public LoginResult login(LoginRequest request) throws ResponseException {
-        var path = "/user";
+        var path = "/session";
         return this.makeRequest("POST", path, request, LoginResult.class);
+    }
+
+    public RegisterResult register(RegisterRequest request) throws ResponseException {
+        var path = "/user";
+        return this.makeRequest("POST", path, request, RegisterResult.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
@@ -34,7 +39,7 @@ public class ServerFacade {
         } catch (ResponseException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
+            throw new ResponseException(ex.getMessage());
         }
     }
 
@@ -58,7 +63,7 @@ public class ServerFacade {
                 }
             }
 
-            throw new ResponseException(status, "other failure: " + status);
+            throw new ResponseException("other failure: " + status);
         }
     }
 
