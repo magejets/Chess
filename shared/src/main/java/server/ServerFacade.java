@@ -35,6 +35,11 @@ public class ServerFacade {
         return this.makeRequest("GET", path, request, ListResult.class);
     }
 
+    public JoinResult join(JoinRequest request) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("PUT", path, request, JoinResult.class);
+    }
+
     public LogoutResult logout(LogoutRequest request) throws ResponseException {
         var path = "/session";
         return this.makeRequest("DELETE", path, request, LogoutResult.class);

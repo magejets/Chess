@@ -3,18 +3,21 @@ package client;
 import exception.ResponseException;
 import model.GameData;
 import request.CreateRequest;
+import request.JoinRequest;
 import request.ListRequest;
 import request.LogoutRequest;
 import result.CreateResult;
+import result.JoinResult;
 import result.ListResult;
 import result.LogoutResult;
 import ui.EscapeSequences;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class PostloginUI extends UI {
     private String userAuth;
-    private String username;
+    private GameData currentGame;
 
     public PostloginUI(String serverUrl) {
         super(serverUrl);
@@ -29,12 +32,12 @@ public class PostloginUI extends UI {
         return userAuth;
     }
 
-    public String getUsername() {
-        return username;
+    public GameData getCurrentGame() {
+        return currentGame;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCurrentGame(GameData currentGame) {
+        this.currentGame = currentGame;
     }
 
     @Override
@@ -84,7 +87,11 @@ public class PostloginUI extends UI {
     }
 
     private String join(String... params) throws ResponseException {
-        return "";
+        List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
+        JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
+                gameList.get(Integer.parseInt(params[0]) - 1).getGameID(), params[1]));
+        setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
+        return "Joining as " + params[1] + " in game " + params[0] + ": " + getCurrentGame().getGameName();
     }
 
     private String observe(String... params) throws ResponseException {

@@ -1,8 +1,20 @@
 package client;
 
+import model.GameData;
+
 public class GameplayUI extends UI {
+    private GameData currentGame;
+
     public GameplayUI(String serverUrl) {
         super(serverUrl);
+    }
+
+    public GameData getCurrentGame() {
+        return currentGame;
+    }
+
+    public void setCurrentGame(GameData currentGame) {
+        this.currentGame = currentGame;
     }
 
     @Override
