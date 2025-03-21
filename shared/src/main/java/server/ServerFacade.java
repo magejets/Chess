@@ -63,7 +63,8 @@ public class ServerFacade {
             String classString = request.getClass().toString();
             if (classString.equals("class request.ListRequest") ||
                     classString.equals("class request.JoinRequest") ||
-                    classString.equals("class request.LogoutRequest")) {
+                    classString.equals("class request.LogoutRequest") ||
+                    classString.equals("class request.CreateRequest")) {
                 ListRequest tempList;
                 JoinRequest tempJoin;
                 LogoutRequest tempLog;

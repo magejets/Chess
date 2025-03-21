@@ -28,8 +28,8 @@ public class PreloginUI extends UI{
 
     @Override
     public String eval(String input) throws ResponseException {
-        var tokens = input.toLowerCase().split(" ");
-        var cmd = (tokens.length > 0) ? tokens[0] : "help";
+        var tokens = input.split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "login" -> EscapeSequences.SET_TEXT_COLOR_WHITE + login(params);

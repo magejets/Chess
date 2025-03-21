@@ -4,8 +4,10 @@ import exception.ResponseException;
 import model.GameData;
 import request.CreateRequest;
 import request.ListRequest;
+import request.LogoutRequest;
 import result.CreateResult;
 import result.ListResult;
+import result.LogoutResult;
 import ui.EscapeSequences;
 
 import java.util.Arrays;
@@ -28,8 +30,8 @@ public class PostloginUI extends UI {
 
     @Override
     public String eval(String input) throws ResponseException{
-        var tokens = input.toLowerCase().split(" ");
-        var cmd = (tokens.length > 0) ? tokens[0] : "help";
+        var tokens = input.split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "create" -> EscapeSequences.SET_TEXT_COLOR_WHITE + create(params);
@@ -63,9 +65,10 @@ public class PostloginUI extends UI {
         StringBuilder returnString = new StringBuilder("\tActive Games:\n");
         for (int i = 0; i < result.games().size(); i++) {
             GameData loopGame = result.games().get(i);
-            returnString.append("\t\t" + (i + 1) + ") " + loopGame.getGameName() +
+            returnString.append("\t\t" + (i + 1) + ") " +
                     " WHITE: " + (loopGame.getWhiteUsername() == null ? "<empty>" : loopGame.getWhiteUsername()) +
                     " BLACK: " + (loopGame.getBlackUsername() == null ? "<empty>" : loopGame.getBlackUsername()) +
+                    " Name: " + loopGame.getGameName() +
                     (i == result.games().size() - 1 ? "" : "\n"));
         }
         return returnString.toString();
@@ -80,6 +83,7 @@ public class PostloginUI extends UI {
     }
 
     private String logout() throws ResponseException {
+        //LogoutResult result = server.logout(new LogoutRequest(this.getUserAuth()));
         return "";
     }
 }
