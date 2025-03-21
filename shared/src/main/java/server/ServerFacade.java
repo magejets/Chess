@@ -42,10 +42,6 @@ public class ServerFacade {
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
-            // set the auth token if it is in the request
-//            try {
-//                http.addRequestProperty("Authorization", request.authToken());
-//            }
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
@@ -62,6 +58,8 @@ public class ServerFacade {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             String reqData = new Gson().toJson(request);
+
+            // set the header with an auth token if there is one
             String classString = request.getClass().toString();
             if (classString.equals("class request.ListRequest") ||
                     classString.equals("class request.JoinRequest") ||
@@ -85,6 +83,7 @@ public class ServerFacade {
                         break;
                 }
             }
+            // only set the body if there is one
             if (!(classString.equals("class request.ListRequest") ||
                     classString.equals("class request.LogoutRequest"))) {
                 try (OutputStream reqBody = http.getOutputStream()) {

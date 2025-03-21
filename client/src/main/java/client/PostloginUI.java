@@ -1,6 +1,7 @@
 package client;
 
 import exception.ResponseException;
+import model.GameData;
 import request.CreateRequest;
 import request.ListRequest;
 import result.CreateResult;
@@ -32,7 +33,7 @@ public class PostloginUI extends UI {
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "create" -> EscapeSequences.SET_TEXT_COLOR_WHITE + create(params);
-            case "list" -> EscapeSequences.SET_TEXT_COLOR_WHITE + list(params);
+            case "list" -> EscapeSequences.SET_TEXT_COLOR_BLUE + list(params) + EscapeSequences.SET_TEXT_COLOR_WHITE;
             case "join" -> EscapeSequences.SET_TEXT_COLOR_WHITE + join(params);
             case "observe" -> EscapeSequences.SET_TEXT_COLOR_WHITE + observe(params);
             case "logout" -> EscapeSequences.SET_TEXT_COLOR_WHITE + logout();
@@ -59,7 +60,15 @@ public class PostloginUI extends UI {
 
     private String list(String... params) throws ResponseException  {
         ListResult result = server.list(new ListRequest(this.getUserAuth()));
-        return "";
+        StringBuilder returnString = new StringBuilder("\tActive Games:\n");
+        for (int i = 0; i < result.games().size(); i++) {
+            GameData loopGame = result.games().get(i);
+            returnString.append("\t\t" + (i + 1) + ") " + loopGame.getGameName() +
+                    " WHITE: " + (loopGame.getWhiteUsername() == null ? "<empty>" : loopGame.getWhiteUsername()) +
+                    " BLACK: " + (loopGame.getBlackUsername() == null ? "<empty>" : loopGame.getBlackUsername()) +
+                    (i == result.games().size() - 1 ? "" : "\n"));
+        }
+        return returnString.toString();
     }
 
     private String join(String... params) throws ResponseException {
