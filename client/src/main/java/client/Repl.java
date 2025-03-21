@@ -41,6 +41,11 @@ public class Repl {
                     phase = "LOGGED_IN";
                     postClient.setUserAuth(preClient.getUserAuth());
                 }
+                if (result.startsWith(EscapeSequences.SET_TEXT_COLOR_WHITE + "Successfully logged out")) {
+                    phase = "LOGGED_OUT";
+                    postClient.setUserAuth("");
+                    preClient.setUserAuth("");
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_RED + msg);

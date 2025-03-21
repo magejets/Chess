@@ -14,6 +14,7 @@ import java.util.Arrays;
 
 public class PostloginUI extends UI {
     private String userAuth;
+    private String username;
 
     public PostloginUI(String serverUrl) {
         super(serverUrl);
@@ -26,6 +27,14 @@ public class PostloginUI extends UI {
 
     public String getUserAuth() {
         return userAuth;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -83,7 +92,7 @@ public class PostloginUI extends UI {
     }
 
     private String logout() throws ResponseException {
-        //LogoutResult result = server.logout(new LogoutRequest(this.getUserAuth()));
-        return "";
+        LogoutResult result = server.logout(new LogoutRequest(this.getUserAuth()));
+        return "Successfully logged out";
     }
 }
