@@ -49,7 +49,7 @@ public class GameService extends Service{
 
     public CreateResult createGame(CreateRequest request) {
         try {
-            if (authorize(request.getAuthToken()) == null) {
+            if (authorize(request.authToken()) == null) {
                 return new CreateResult("Error: unauthorized");
             }
             if (request.getGameName().isEmpty()) {
@@ -68,7 +68,7 @@ public class GameService extends Service{
     public JoinResult joinGames(JoinRequest request) {
         AuthData authData;
         try {
-            authData = authorize(request.getAuthToken());
+            authData = authorize(request.authToken());
             if (authData == null) {
                 return new JoinResult("Error: unauthorized");
             } else {

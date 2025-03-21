@@ -30,6 +30,11 @@ public class ServerFacade {
         return this.makeRequest("POST", path, request, CreateResult.class);
     }
 
+    public ListResult list(ListRequest request) throws ResponseException {
+        var path = "/game";
+        return this.makeRequest("GET", path, request, ListResult.class);
+    }
+
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
@@ -37,6 +42,10 @@ public class ServerFacade {
             http.setRequestMethod(method);
             http.setDoOutput(true);
 
+            // set the auth token if it is in the request
+//            try {
+//                http.addRequestProperty("Authorization", request.authToken());
+//            }
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);
@@ -53,8 +62,34 @@ public class ServerFacade {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             String reqData = new Gson().toJson(request);
-            try (OutputStream reqBody = http.getOutputStream()) {
-                reqBody.write(reqData.getBytes());
+            String classString = request.getClass().toString();
+            if (classString.equals("class request.ListRequest") ||
+                    classString.equals("class request.JoinRequest") ||
+                    classString.equals("class request.LogoutRequest")) {
+                ListRequest tempList;
+                JoinRequest tempJoin;
+                LogoutRequest tempLog;
+
+                switch (request.getClass().toString()) {
+                    case "class request.ListRequest":
+                        tempList = (ListRequest) request;
+                        http.addRequestProperty("Authorization", tempList.authToken());
+                        break;
+                    case "class request.JoinRequest":
+                        tempJoin = (JoinRequest) request;
+                        http.addRequestProperty("Authorization", tempJoin.authToken());
+                        break;
+                    case "class request.LogoutRequest":
+                        tempLog = (LogoutRequest) request;
+                        http.addRequestProperty("Authorization", tempLog.authToken());
+                        break;
+                }
+            }
+            if (!(classString.equals("class request.ListRequest") ||
+                    classString.equals("class request.LogoutRequest"))) {
+                try (OutputStream reqBody = http.getOutputStream()) {
+                    reqBody.write(reqData.getBytes());
+                }
             }
         }
     }

@@ -1,2 +1,2 @@
 #Notes file
-- (? Prevent a user from logging in if already logged in?)
+- make sure each param thing has the right number before indexing

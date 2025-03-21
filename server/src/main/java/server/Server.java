@@ -1,21 +1,18 @@
 package server;
 
-//import exception.Exception.ResponseException;
+
 import dataaccess.authdao.AuthDao;
 import dataaccess.authdao.SQLAuthDao;
 import dataaccess.gamedao.GameDao;
 import dataaccess.gamedao.SQLGameDao;
 import dataaccess.userdao.SQLUserDao;
 import dataaccess.userdao.UserDao;
-import model.GameData;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
 import spark.*;
 import handler.*;
-import com.google.gson.Gson;
 
-import java.util.List;
 
 public class Server {
     static private UserDao userDao;
@@ -54,14 +51,16 @@ public class Server {
         GameService  gameService  = new GameService(authDao, gameDao);
         ClearService clearService = new ClearService(userDao, authDao, gameDao);
 
+        //Spark.before(((request, response) -> {System.out.println("before req is: " + request.body());}));
+
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", new RegisterHandler(userService)); // Register
         Spark.post("/session", new LoginHandler(userService)); // Login
-        Spark.delete("/session", new LogoutHandler(userService)); // Logout // check if it needs user tambien
+        Spark.delete("/session", new LogoutHandler(userService)); // Logout
         Spark.get("/game", new ListHandler(gameService)); // List Games
         Spark.post("/game", new CreateHandler(gameService)); // Create Games
         Spark.put("/game", new JoinHandler(gameService)); // Join Games
-        Spark.delete("/db", new ClearHandler(clearService));
+        Spark.delete("/db", new ClearHandler(clearService)); // clear database
     }
 
     public void stop() {

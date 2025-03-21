@@ -44,8 +44,6 @@ public class Repl {
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_RED + msg);
-                System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + "\n[" + phase + "] >>> " +
-                        EscapeSequences.SET_TEXT_COLOR_GREEN);
             }
         }
     }

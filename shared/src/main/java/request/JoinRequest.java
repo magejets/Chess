@@ -15,7 +15,7 @@ public class JoinRequest {
         this.authToken = auth;
     }
 
-    public String getAuthToken() {
+    public String authToken() {
         return this.authToken;
     }
 

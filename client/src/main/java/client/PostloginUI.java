@@ -2,7 +2,9 @@ package client;
 
 import exception.ResponseException;
 import request.CreateRequest;
+import request.ListRequest;
 import result.CreateResult;
+import result.ListResult;
 import ui.EscapeSequences;
 
 import java.util.Arrays;
@@ -56,6 +58,7 @@ public class PostloginUI extends UI {
     }
 
     private String list(String... params) throws ResponseException  {
+        ListResult result = server.list(new ListRequest(this.getUserAuth()));
         return "";
     }
 

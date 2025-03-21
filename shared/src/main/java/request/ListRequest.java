@@ -1,4 +1,12 @@
 package request;
 
-public record ListRequest (String authToken){
+public class ListRequest {
+    private String authToken;
+    public ListRequest(String authToken) {
+        this.authToken = authToken;
+    }
+
+    public String authToken() {
+        return this.authToken;
+    }
 }

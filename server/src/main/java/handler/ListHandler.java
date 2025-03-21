@@ -1,6 +1,7 @@
 package handler;
 
 import com.google.gson.Gson;
+import request.CreateRequest;
 import request.ListRequest;
 import result.ListResult;
 import service.GameService;
@@ -17,6 +18,9 @@ public class ListHandler implements Route {
     }
 
     public String handle(Request req, Response res) {
+//        System.out.println("The straight dope: " + req.body());
+//        var request = new Gson().fromJson(req.body() , ListRequest.class);
+//        ListResult result = service.listGames(request);
         var request = new ListRequest(req.headers("Authorization"));
         ListResult result = service.listGames(request);
         return switch (result.getMessage()) {
