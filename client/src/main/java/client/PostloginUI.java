@@ -46,12 +46,12 @@ public class PostloginUI extends UI {
         var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
-            case "create" -> EscapeSequences.SET_TEXT_COLOR_WHITE + create(params);
-            case "list" -> EscapeSequences.SET_TEXT_COLOR_BLUE + list(params) + EscapeSequences.SET_TEXT_COLOR_WHITE;
-            case "join" -> EscapeSequences.SET_TEXT_COLOR_WHITE + join(params);
-            case "observe" -> EscapeSequences.SET_TEXT_COLOR_WHITE + observe(params);
-            case "logout" -> EscapeSequences.SET_TEXT_COLOR_WHITE + logout();
-            default -> EscapeSequences.SET_TEXT_COLOR_WHITE + help();
+            case "create" -> create(params);
+            case "list" ->list(params);// + EscapeSequences.SET_TEXT_COLOR_WHITE;
+            case "join" -> join(params);
+            case "observe" -> observe(params);
+            case "logout" -> logout();
+            default -> help();
         };
     }
 
@@ -68,8 +68,13 @@ public class PostloginUI extends UI {
     }
 
     private String create(String... params) throws ResponseException{
-        CreateResult result = server.create(new CreateRequest(this.getUserAuth(), params[0]));
-        return "Game: " + params[0] + " created";
+        if (params.length < 1) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Please include a game name";
+        } else {
+            CreateResult result = server.create(new CreateRequest(this.getUserAuth(), params[0]));
+            return EscapeSequences.SET_TEXT_COLOR_WHITE + "Game: " + params[0] + " created";
+        }
+
     }
 
     private String list(String... params) throws ResponseException  {
@@ -83,27 +88,44 @@ public class PostloginUI extends UI {
                     " Name: " + loopGame.getGameName() +
                     (i == result.games().size() - 1 ? "" : "\n"));
         }
-        return returnString.toString();
+        return EscapeSequences.SET_TEXT_COLOR_BLUE + returnString.toString();
     }
 
     private String join(String... params) throws ResponseException {
-        List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
-        JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
-                gameList.get(Integer.parseInt(params[0]) - 1).getGameID(), params[1]));
-        setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
-        return "Joining as " + params[1] + " in game " + params[0] + ": " + getCurrentGame().getGameName();
+        if (params.length < 2) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Please include the game id followed by your desired color";
+        } else {
+            String color = params[1].toUpperCase();
+            List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
+            if (gameList.size() < Integer.parseInt(params[0])) {
+                return EscapeSequences.SET_TEXT_COLOR_RED + "Game ID not on list";
+            } else {
+                JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
+                        gameList.get(Integer.parseInt(params[0]) - 1).getGameID(), color));
+                setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
+                return EscapeSequences.SET_TEXT_COLOR_WHITE + "Joining as " + color + " in game " +
+                        params[0] + ": " + getCurrentGame().getGameName();
+            }
+        }
     }
 
     private String observe(String... params) throws ResponseException {
-        List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
-//        JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
-//                gameList.get(Integer.parseInt(params[0]) - 1).getGameID(), params[1]));
-        setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
-        return "Now observing game " + params[0] + ": " + getCurrentGame().getGameName();
+        if (params.length < 1) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Please include the game id";
+        } else {
+            List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
+            if (gameList.size() < Integer.parseInt(params[0])) {
+                return EscapeSequences.SET_TEXT_COLOR_RED + "Game ID not on list";
+            } else {
+                setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
+                return EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game " + params[0] + ": "
+                        + getCurrentGame().getGameName();
+            }
+        }
     }
 
     private String logout() throws ResponseException {
         LogoutResult result = server.logout(new LogoutRequest(this.getUserAuth()));
-        return "Successfully logged out";
+        return EscapeSequences.SET_TEXT_COLOR_WHITE + "Successfully logged out";
     }
 }

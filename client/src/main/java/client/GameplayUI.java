@@ -3,8 +3,11 @@ package client;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import exception.ResponseException;
 import model.GameData;
 import ui.EscapeSequences;
+
+import java.util.Arrays;
 
 public class GameplayUI extends UI {
     private GameData currentGame;
@@ -32,24 +35,13 @@ public class GameplayUI extends UI {
 
     @Override
     public String eval(String input) {
-//        try {
-//            var tokens = input.split(" ");
-//            var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
-//            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-//            return switch (cmd) {
-//                case "signin" -> signIn(params);
-//                case "rescue" -> rescuePet(params);
-//                case "list" -> listPets();
-//                case "signout" -> signOut();
-//                case "adopt" -> adoptPet(params);
-//                case "adoptall" -> adoptAllPets();
-//                case "quit" -> "quit";
-//                default -> help();
-//            };
-//        } catch (ResponseException ex) {
-//            return ex.getMessage();
-//        }
-        return "";
+        var tokens = input.split(" ");
+        var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
+        var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+        return switch (cmd) {
+            case "quit" -> "quit";
+            default -> help();
+        };
     }
 
     public void drawBoard(String color) {
