@@ -95,7 +95,11 @@ public class PostloginUI extends UI {
     }
 
     private String observe(String... params) throws ResponseException {
-        return "";
+        List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
+//        JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
+//                gameList.get(Integer.parseInt(params[0]) - 1).getGameID(), params[1]));
+        setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
+        return "Now observing game " + params[0] + ": " + getCurrentGame().getGameName();
     }
 
     private String logout() throws ResponseException {

@@ -32,10 +32,10 @@ public class PreloginUI extends UI{
         var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
-            case "login" -> EscapeSequences.SET_TEXT_COLOR_WHITE + login(params);
-            case "register" -> EscapeSequences.SET_TEXT_COLOR_WHITE + register(params);
+            case "login" ->  login(params);
+            case "register" -> register(params);
             case "quit" -> "quit";
-            default -> EscapeSequences.SET_TEXT_COLOR_WHITE + help();
+            default -> help();
         };
     }
 
@@ -50,13 +50,29 @@ public class PreloginUI extends UI{
     }
 
     private String login(String... params) throws ResponseException{
-        LoginResult result = server.login(new LoginRequest(params[0], params[1]));
-        this.setUserAuth(result.authToken());
-        return "Logged in as " + params[0];
+        if (params.length < 2) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Please include your username and password";
+        } else {
+            LoginResult result = server.login(new LoginRequest(params[0], params[1]));
+            this.setUserAuth(result.authToken());
+            return EscapeSequences.SET_TEXT_COLOR_WHITE + "Logged in as " + params[0];
+        }
     }
 
     private String register(String... params) throws ResponseException{
-        RegisterResult result = server.register(new RegisterRequest(params[0], params[1], params[2]));
-        return login(params);
+        if (params.length < 3) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Please include your username, password, and email";
+        } else {
+            try {
+                RegisterResult result = server.register(new RegisterRequest(params[0], params[1], params[2]));
+                return login(params);
+            } catch (ResponseException e) {
+                if (e.getMessage().equals("Error: already taken")) {
+                    return EscapeSequences.SET_TEXT_COLOR_RED + "Username already taken, select another";
+                } else {
+                    return EscapeSequences.SET_TEXT_COLOR_RED + "Error, please try again";
+                }
+            }
+        }
     }
 }
