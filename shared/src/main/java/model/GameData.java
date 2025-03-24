@@ -9,7 +9,7 @@ public class GameData {
     String whiteUsername;
     String blackUsername;
     String gameName;
-    transient ChessGame game;
+    ChessGame game;
 
     public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
         setGameID(gameID);

@@ -34,7 +34,7 @@ public class ListHandler implements Route {
             }
             case null, default -> {
                 res.status(200);
-                yield new Gson().toJson(service.listGames(request), ListResult.class);
+                yield new Gson().toJson(result, ListResult.class);
             }
         };
 
