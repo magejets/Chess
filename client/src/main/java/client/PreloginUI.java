@@ -52,6 +52,10 @@ public class PreloginUI extends UI{
     private String login(String... params) throws ResponseException{
         if (params.length < 2) {
             return EscapeSequences.SET_TEXT_COLOR_RED + "Please include your username and password";
+        } else if (params.length > 2) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Please include" + EscapeSequences.SET_TEXT_BOLD +
+                    EscapeSequences.SET_TEXT_ITALIC + " only " + EscapeSequences.RESET_TEXT_ITALIC +
+                    EscapeSequences.RESET_TEXT_BOLD_FAINT + "your username and password (no email)";
         } else {
             try {
                 LoginResult result = server.login(new LoginRequest(params[0], params[1]));

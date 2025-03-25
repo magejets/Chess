@@ -67,7 +67,7 @@ public class GameplayUI extends UI {
         // loop though the board and print the side label and the squares
         for (int i = startRow; i != (startRow == 7 ? -1 : 8); i += (startRow == 7 ? -1 : 1)) {
             // print the side label
-            System.out.print("\n" + EscapeSequences.SET_BG_COLOR_BLUE + " " + EscapeSequences.SET_TEXT_COLOR_WHITE + i + " ");
+            System.out.print("\n" + EscapeSequences.SET_BG_COLOR_BLUE + " " + EscapeSequences.SET_TEXT_COLOR_WHITE + (i + 1) + " ");
             for (int j = startCol; j != (startCol == 0 ? 8 : -1); j += (startCol == 0 ? 1 : -1)) {
                 String squareBG = ((i % 2 == 1) && (j % 2 == 0)) || ((i % 2 == 0) && (j % 2 == 1)) ?
                         EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
@@ -76,7 +76,7 @@ public class GameplayUI extends UI {
                 System.out.print(EscapeSequences.RESET_ALL + squareBG + " " + pieceChar + " ");
             }
             System.out.print(EscapeSequences.SET_BG_COLOR_BLUE + " " +
-                    EscapeSequences.SET_TEXT_COLOR_WHITE + i + " " + EscapeSequences.RESET_BG_COLOR);
+                    EscapeSequences.SET_TEXT_COLOR_WHITE + (i + 1) + " " + EscapeSequences.RESET_BG_COLOR);
         }
 
         // print the footer

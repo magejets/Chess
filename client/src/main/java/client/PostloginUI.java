@@ -105,12 +105,20 @@ public class PostloginUI extends UI {
             }
             if (gameList.size() < gameID) {
                 return EscapeSequences.SET_TEXT_COLOR_RED + "Game ID not on list";
+            } else if (gameID <= 0) {
+                return EscapeSequences.SET_TEXT_COLOR_RED + "Game ID must be a positive integer";
             } else {
                 if (!(color.equals("WHITE") || color.equals("BLACK"))) {
                     return EscapeSequences.SET_TEXT_COLOR_RED + "Color must be WHITE or BLACK";
                 }
-                JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
-                        gameList.get(gameID - 1).getGameID(), color));
+                try {
+                    JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
+                            gameList.get(gameID - 1).getGameID(), color));
+                } catch (ResponseException e) {
+                    if (e.getMessage().equals("Error: already taken")) {
+                        return EscapeSequences.SET_TEXT_COLOR_RED + "Color already taken, choose another or select a different game";
+                    }
+                }
                 setCurrentGame(gameList.get(gameID - 1));
                 return EscapeSequences.SET_TEXT_COLOR_WHITE + "Joining as " + color + " in game " +
                         params[0] + ": " + getCurrentGame().getGameName();
