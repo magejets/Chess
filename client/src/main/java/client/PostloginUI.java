@@ -97,12 +97,21 @@ public class PostloginUI extends UI {
         } else {
             String color = params[1].toUpperCase();
             List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
-            if (gameList.size() < Integer.parseInt(params[0])) {
+            int gameID;
+            try {
+                gameID = Integer.parseInt(params[0]);
+            } catch (NumberFormatException ex) {
+                return EscapeSequences.SET_TEXT_COLOR_RED + params[0] + " is not a number, please enter a valid game ID";
+            }
+            if (gameList.size() < gameID) {
                 return EscapeSequences.SET_TEXT_COLOR_RED + "Game ID not on list";
             } else {
+                if (!(color.equals("WHITE") || color.equals("BLACK"))) {
+                    return EscapeSequences.SET_TEXT_COLOR_RED + "Color must be WHITE or BLACK";
+                }
                 JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
-                        gameList.get(Integer.parseInt(params[0]) - 1).getGameID(), color));
-                setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
+                        gameList.get(gameID - 1).getGameID(), color));
+                setCurrentGame(gameList.get(gameID - 1));
                 return EscapeSequences.SET_TEXT_COLOR_WHITE + "Joining as " + color + " in game " +
                         params[0] + ": " + getCurrentGame().getGameName();
             }
@@ -114,11 +123,17 @@ public class PostloginUI extends UI {
             return EscapeSequences.SET_TEXT_COLOR_RED + "Please include the game id";
         } else {
             List<GameData> gameList = server.list(new ListRequest(this.getUserAuth())).games();
-            if (gameList.size() < Integer.parseInt(params[0])) {
+            int gameID;
+            try {
+                gameID = Integer.parseInt(params[0]);
+            } catch (NumberFormatException ex) {
+                return EscapeSequences.SET_TEXT_COLOR_RED + params[0] + " is not a number, please enter a valid game ID";
+            }
+            if (gameList.size() < gameID) {
                 return EscapeSequences.SET_TEXT_COLOR_RED + "Game ID not on list";
             } else {
                 setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
-                return EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game " + params[0] + ": "
+                return EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game " + gameID + ": "
                         + getCurrentGame().getGameName();
             }
         }

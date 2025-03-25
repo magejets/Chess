@@ -53,9 +53,17 @@ public class PreloginUI extends UI{
         if (params.length < 2) {
             return EscapeSequences.SET_TEXT_COLOR_RED + "Please include your username and password";
         } else {
-            LoginResult result = server.login(new LoginRequest(params[0], params[1]));
-            this.setUserAuth(result.authToken());
-            return EscapeSequences.SET_TEXT_COLOR_WHITE + "Logged in as " + params[0];
+            try {
+                LoginResult result = server.login(new LoginRequest(params[0], params[1]));
+                this.setUserAuth(result.authToken());
+                return EscapeSequences.SET_TEXT_COLOR_WHITE + "Logged in as " + params[0];
+            } catch (Exception e) {
+                if (e.getMessage().equals("Error: unauthorized")) {
+                    return EscapeSequences.SET_TEXT_COLOR_RED + "Username or password incorrect";
+                } else {
+                    return EscapeSequences.SET_TEXT_COLOR_RED + "Error, please try again";
+                }
+            }
         }
     }
 
