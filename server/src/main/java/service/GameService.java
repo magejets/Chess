@@ -52,7 +52,7 @@ public class GameService extends Service{
             if (authorize(request.authToken()) == null) {
                 return new CreateResult("Error: unauthorized");
             }
-            if (request.getGameName().isEmpty()) {
+            if (request.getGameName() == null || request.getGameName().isEmpty()) {
                 return new CreateResult("Error: bad request");
             }
             GameData game = new GameData(request.getGameName());
