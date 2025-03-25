@@ -83,6 +83,7 @@ public class ServerFacade {
                 ListRequest tempList;
                 JoinRequest tempJoin;
                 LogoutRequest tempLog;
+                CreateRequest tempCreate;
 
                 switch (request.getClass().toString()) {
                     case "class request.ListRequest":
@@ -96,6 +97,10 @@ public class ServerFacade {
                     case "class request.LogoutRequest":
                         tempLog = (LogoutRequest) request;
                         http.addRequestProperty("Authorization", tempLog.authToken());
+                        break;
+                    case "class request.CreateRequest":
+                        tempCreate = (CreateRequest) request;
+                        http.addRequestProperty("Authorization", tempCreate.authToken());
                         break;
                 }
             }
