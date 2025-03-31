@@ -26,9 +26,9 @@ public class Repl {
         var result = "";
         UI currentUI;
         while (!result.equals("quit")) {
-            if (phase != null && (phase.equals("GAME") || phase.equals("OBSERVE"))) {
-                gameClient.drawBoard(gameClient.getColor());
-            }
+//            if (phase != null && (phase.equals("GAME") || phase.equals("OBSERVE"))) {
+//
+//            }
 
             System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + "\n[" + phase + "] >>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
             String line = scanner.nextLine();
@@ -54,11 +54,16 @@ public class Repl {
                     phase = "GAME";
                     gameClient.setCurrentGame(postClient.getCurrentGame());
                     gameClient.setColor(result.substring(21,26)); // lucky that WHITE and BLACK have the same number of characters
+                    gameClient.drawBoard(gameClient.getColor());
                 }
                 if (result.startsWith(EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game")) {
                     phase = "OBSERVE";
                     gameClient.setCurrentGame(postClient.getCurrentGame());
-                    gameClient.setColor("WHITE"); // observer sees from PoV white
+                    gameClient.setColor("OBSERVE"); // observer sees from PoV white
+                    gameClient.drawBoard(gameClient.getColor());
+                }
+                if (result.equals("leaving game")) {
+                    phase = "LOGGED_IN";
                 }
             } catch (Throwable e) {
                 var msg = e.toString();

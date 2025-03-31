@@ -1,3 +1,6 @@
 #Notes file
-- Write unit tests
-- Make sure previous tests are passing
+- implement UI (put comments where we need websocket stuff)
+- build websocket classes outlined in specs
+- look at petshop to connect everything
+  - compare petshop to the uml provided in the specs (list here the classes I'll need)
+- test and refine

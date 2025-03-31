@@ -57,16 +57,20 @@ public class PreloginUI extends UI{
                     EscapeSequences.SET_TEXT_ITALIC + " only " + EscapeSequences.RESET_TEXT_ITALIC +
                     EscapeSequences.RESET_TEXT_BOLD_FAINT + "your username and password (no email)";
         } else {
-            try {
-                LoginResult result = server.login(new LoginRequest(params[0], params[1]));
-                this.setUserAuth(result.authToken());
-                return EscapeSequences.SET_TEXT_COLOR_WHITE + "Logged in as " + params[0];
-            } catch (Exception e) {
-                if (e.getMessage().equals("Error: unauthorized")) {
-                    return EscapeSequences.SET_TEXT_COLOR_RED + "Username or password incorrect";
-                } else {
-                    return EscapeSequences.SET_TEXT_COLOR_RED + "Error, please try again";
-                }
+            return login(params[0], params[1]);
+        }
+    }
+
+    private String login(String username, String password) {
+        try {
+            LoginResult result = server.login(new LoginRequest(username , password));
+            this.setUserAuth(result.authToken());
+            return EscapeSequences.SET_TEXT_COLOR_WHITE + "Logged in as " + username    ;
+        } catch (Exception e) {
+            if (e.getMessage().equals("Error: unauthorized")) {
+                return EscapeSequences.SET_TEXT_COLOR_RED + "Username or password incorrect";
+            } else {
+                return EscapeSequences.SET_TEXT_COLOR_RED + "Error, please try again";
             }
         }
     }
@@ -77,7 +81,7 @@ public class PreloginUI extends UI{
         } else {
             try {
                 RegisterResult result = server.register(new RegisterRequest(params[0], params[1], params[2]));
-                return login(params);
+                return login(params[0], params[1]);
             } catch (ResponseException e) {
                 if (e.getMessage().equals("Error: already taken")) {
                     return EscapeSequences.SET_TEXT_COLOR_RED + "Username already taken, select another";

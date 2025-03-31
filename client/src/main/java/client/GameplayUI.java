@@ -38,14 +38,28 @@ public class GameplayUI extends UI {
         var tokens = input.split(" ");
         var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-        return switch (cmd) {
-            case "quit" -> "quit";
-            default -> help();
-        };
+        if (this.getColor().equals("OBSERVE")) {
+            return switch (cmd) {
+                case "leave" -> leave();
+                case "redraw" -> redraw();
+                case "quit" -> "quit";
+                default -> help();
+            };
+        } else {
+            return switch (cmd) {
+                case "leave" -> leave();
+                case "redraw" -> redraw();
+                case "move" -> move(params);
+                case "highlight" -> highlight(params);
+                case "resign" -> resign();
+                case "quit" -> "quit";
+                default -> help();
+            };
+        }
     }
 
     public void drawBoard(String color) {
-        int startRow = 7; // default to WHITE values in case some other value makes it into here
+        int startRow = 7;
         int startCol = 0;
 
         if (color.equals("BLACK")) { // if not white then change it
@@ -111,8 +125,45 @@ public class GameplayUI extends UI {
         return pieceChar;
     }
 
+    private String leave() {
+        return EscapeSequences.SET_TEXT_COLOR_WHITE + "leaving game"; // dummy function for now
+    }
+
+    private String redraw() {
+        this.drawBoard(this.getColor());
+        return "";
+    }
+
+    private String move(String... params) {
+        return "";
+    }
+
+    private String highlight(String... params) {
+        return "";
+    }
+
+    private String resign() {
+        return "";
+    }
+
     @Override
     public String help() {
-        return "";
+        if (this.getColor().equals("OBSERVE")) {
+            return EscapeSequences.RESET_ALL + EscapeSequences.SET_TEXT_COLOR_BLUE
+                    + "redraw" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - redraws the chess board\n"
+                    + EscapeSequences.SET_TEXT_COLOR_BLUE + "leave" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - the game\n"
+                    + EscapeSequences.SET_TEXT_COLOR_BLUE + "help"
+                    + EscapeSequences.SET_TEXT_COLOR_WHITE + " - with possible commands";
+        } else {
+            return EscapeSequences.RESET_ALL + EscapeSequences.SET_TEXT_COLOR_BLUE
+                    + "redraw" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - redraws the chess board\n"
+                    + EscapeSequences.SET_TEXT_COLOR_BLUE + "leave" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - the game\n"
+                    + EscapeSequences.SET_TEXT_COLOR_BLUE + "move <column><row>" + EscapeSequences.SET_TEXT_COLOR_WHITE
+                    + " - move a piece\n" + EscapeSequences.SET_TEXT_COLOR_BLUE
+                    + "resign" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - the game\n" + EscapeSequences.SET_TEXT_COLOR_BLUE
+                    + "highlight <column><row>" + EscapeSequences.SET_TEXT_COLOR_WHITE
+                    + " - possible moves for indicated piece\n" + EscapeSequences.SET_TEXT_COLOR_BLUE+
+                    "help" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - with possible commands";
+        }
     }
 }
