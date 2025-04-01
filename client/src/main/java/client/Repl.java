@@ -1,10 +1,12 @@
 package client;
 
 import ui.EscapeSequences;
+import websocket.NotificationHandler;
+import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements NotificationHandler {
     private final PreloginUI preClient;
     private final PostloginUI postClient;
     private final GameplayUI gameClient;
@@ -70,5 +72,11 @@ public class Repl {
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_RED + msg);
             }
         }
+    }
+
+    @Override
+    public void notify(ServerMessage notification) {
+        // switch case statement to see which type it is then deserialize(?) accordingly
+        System.out.print(notification.toString());
     }
 }

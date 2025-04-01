@@ -7,6 +7,7 @@ import dataaccess.gamedao.GameDao;
 import dataaccess.gamedao.SQLGameDao;
 import dataaccess.userdao.SQLUserDao;
 import dataaccess.userdao.UserDao;
+import websocket.WebSocketHandler;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
@@ -18,6 +19,8 @@ public class Server {
     static private UserDao userDao;
     static private AuthDao authDao;
     static private GameDao gameDao;
+
+    private static final WebSocketHandler webSocketHandler = new WebSocketHandler();
 
     public Server(UserDao ud, AuthDao ad, GameDao gd) {
         userDao = ud;
@@ -51,7 +54,7 @@ public class Server {
         GameService  gameService  = new GameService(authDao, gameDao);
         ClearService clearService = new ClearService(userDao, authDao, gameDao);
 
-        //Spark.before(((request, response) -> {System.out.println("before req is: " + request.body());}));
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", new RegisterHandler(userService)); // Register
