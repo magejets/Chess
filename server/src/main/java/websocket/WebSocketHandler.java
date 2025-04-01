@@ -1,5 +1,6 @@
 package websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import websocket.commands.UserGameCommand;
@@ -13,7 +14,7 @@ public class WebSocketHandler {
 
     }
     @OnWebSocketClose
-    public void onClose(Session session) {
+    public void onClose(Session session, int statusCode, String reason) {
 
     }
     @OnWebSocketError
@@ -22,10 +23,8 @@ public class WebSocketHandler {
     }
     @OnWebSocketMessage
     public void onMessage(Session session, String str) {
-        UserGameCommand message = new Gson.from
+        UserGameCommand message = new Gson().fromJson(str, UserGameCommand.class);
         // switch case statement to determine what to do
-        switch (message) {
-            case ""
-        }
+
     }
 }

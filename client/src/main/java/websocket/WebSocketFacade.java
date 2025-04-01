@@ -1,5 +1,6 @@
 package websocket;
 
+import exception.ResponseException;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ServerMessage;
 
@@ -41,8 +42,12 @@ public class WebSocketFacade extends Endpoint{
         }
     }
 
-    public void connect(String authToken, int gameID) {
-        var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
-
+    public void connect(String authToken, int gameID) throws ResponseException{
+        try {
+            var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException e) {
+            throw new ResponseException(e.getMessage());
+        }
     }
 }
