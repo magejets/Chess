@@ -6,15 +6,18 @@ import chess.ChessPosition;
 import exception.ResponseException;
 import model.GameData;
 import ui.EscapeSequences;
+import websocket.WebSocketFacade;
 
 import java.util.Arrays;
 
 public class GameplayUI extends UI {
     private GameData currentGame;
     private String color;
+    private WebSocketFacade wsFacade;
 
-    public GameplayUI(String serverUrl) {
+    public GameplayUI(String serverUrl, Repl notificationHandler) {
         super(serverUrl);
+        wsFacade = new WebSocketFacade(serverUrl, notificationHandler);
     }
 
     public GameData getCurrentGame() {

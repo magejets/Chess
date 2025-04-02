@@ -15,7 +15,7 @@ public class Repl implements NotificationHandler {
     public Repl(String url) {
         preClient = new PreloginUI(url);
         postClient = new PostloginUI(url);
-        gameClient = new GameplayUI(url);
+        gameClient = new GameplayUI(url, this);
         phase = "LOGGED_OUT";
     }
 
@@ -28,10 +28,6 @@ public class Repl implements NotificationHandler {
         var result = "";
         UI currentUI;
         while (!result.equals("quit")) {
-//            if (phase != null && (phase.equals("GAME") || phase.equals("OBSERVE"))) {
-//
-//            }
-
             System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + "\n[" + phase + "] >>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
             String line = scanner.nextLine();
             currentUI = switch (phase) {
