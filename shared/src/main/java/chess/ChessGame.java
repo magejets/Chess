@@ -11,9 +11,11 @@ import java.util.*;
 public class ChessGame {
     private TeamColor turn;
     private ChessBoard board = new ChessBoard();
+    private Winner winner;
 
     public ChessGame() {
         turn = TeamColor.WHITE;
+        winner = Winner.NONE_YET;
         board.resetBoard();
     }
 
@@ -33,12 +35,27 @@ public class ChessGame {
         this.turn = team;
     }
 
+    public Winner getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Winner winner) {
+        this.winner = winner;
+    }
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
     public enum TeamColor {
         WHITE,
         BLACK
+    }
+
+    public enum Winner {
+        WHITE,
+        BLACK,
+        STALEMATE,
+        NONE_YET
     }
 
     /**

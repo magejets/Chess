@@ -3,6 +3,7 @@ package client;
 import com.google.gson.Gson;
 import ui.EscapeSequences;
 import websocket.NotificationHandler;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -31,7 +32,7 @@ public class Repl implements NotificationHandler {
         var result = "";
         UI currentUI;
         while (!result.equals("quit")) {
-            if (!result.equals("Move made")) {
+            if (!result.equals("Making move")) {
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE +
                         "\n[" + phase + "] >>> " + EscapeSequences.SET_TEXT_COLOR_GREEN);
             }
@@ -93,6 +94,15 @@ public class Repl implements NotificationHandler {
                 gameClient.drawBoard(gameClient.getColor());
                 System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + "\n[" + phase + "] >>> "
                         + EscapeSequences.SET_TEXT_COLOR_GREEN);
+                break;
+            case ERROR:
+                ErrorMessage errorMessage = new Gson().fromJson(notification, ErrorMessage.class);
+                if (errorMessage.getMessage().equals("Wrong turn")) {
+                    System.out.print(EscapeSequences.SET_TEXT_COLOR_RED + "It's not your turn!");
+                    System.out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + "\n[" + phase + "] >>> "
+                            + EscapeSequences.SET_TEXT_COLOR_GREEN);
+                }
+
         }
     }
 }

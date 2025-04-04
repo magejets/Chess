@@ -9,6 +9,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -71,8 +72,12 @@ public class WebSocketHandler {
             }
         } catch (Exception e) {
             if (e.getMessage().equals("Wrong turn")) {
-                ErrorMessage errorMessage = new ErrorMessage()
-                session.getRemote().sendString(new Gson().toJson(message));
+                try {
+                    ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Wrong turn");
+                    session.getRemote().sendString(new Gson().toJson(errorMessage));
+                } catch (Exception ex) {
+
+                }
             }
         }
 

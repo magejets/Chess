@@ -180,10 +180,11 @@ public class GameplayUI extends UI {
         try {
             wsFacade.sendMessage(new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE,
                     this.getAuthToken(), this.getCurrentGame().getGameID(), move));
+            return "Making move";
         } catch (IOException e) {
             return EscapeSequences.SET_TEXT_COLOR_RED + e.getMessage();
         }
-        return "Move made";
+
     }
 
     private String highlight(String... params) {
