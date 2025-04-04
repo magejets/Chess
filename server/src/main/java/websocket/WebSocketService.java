@@ -16,14 +16,15 @@ public class WebSocketService {
         this.gameDao = gameDao;
     }
 
-    public GameData makeMove(int gameID, ChessMove move) throws Exception{
+    public GameData makeMove(int gameID, ChessMove move, ChessGame.TeamColor turn) throws Exception{
         try {
             ChessGame game = gameDao.getGame(gameID).getGame();
-            if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == game.getTeamTurn()) {
+            if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == game.getTeamTurn() &&
+                turn == game.getTeamTurn()) {
                 game.setBoard(game.getBoard().makeMove(move));
-                ChessGame.TeamColor turn = game.getTeamTurn() == ChessGame.TeamColor.WHITE ?
+                ChessGame.TeamColor nextTurn = game.getTeamTurn() == ChessGame.TeamColor.WHITE ?
                         ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
-                game.setTeamTurn(turn);
+                game.setTeamTurn(nextTurn);
                 gameDao.updateGame(gameID, game);
                 return gameDao.getGame(gameID);
             } else {
@@ -39,6 +40,21 @@ public class WebSocketService {
             return authDao.getAuth(authToken).username();
         } catch (DataAccessException e) {
             throw new Exception("Data Access Error");
+        }
+    }
+
+    public ChessGame.TeamColor getTurn(String userName, int gameID) throws Exception{
+        try {
+            GameData game = gameDao.getGame(gameID);
+            if (userName.equals(game.getWhiteUsername())) {
+                return ChessGame.TeamColor.WHITE;
+            } else if (userName.equals(game.getBlackUsername())) {
+                return ChessGame.TeamColor.BLACK;
+            } else {
+                return null;
+            }
+        } catch (DataAccessException e) {
+            throw new Exception("Bad ID");
         }
     }
 }

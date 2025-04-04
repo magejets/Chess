@@ -41,6 +41,7 @@ public class WebSocketHandler {
         // switch case statement to determine what to do
         try {
             String userName = service.getUsername(message.getAuthToken());
+            ChessGame.TeamColor turn = service.getTurn(userName, message.getGameID());
             switch (message.getCommandType()) {
                 case CONNECT:
                     sessions.addSessionToGame(message.getGameID(), session);
@@ -64,7 +65,7 @@ public class WebSocketHandler {
                     break;
                 case MAKE_MOVE:
                     MakeMoveCommand moveCommand = new Gson().fromJson(str, MakeMoveCommand.class);
-                    GameData updatedGame = service.makeMove(message.getGameID(), moveCommand.getMove());
+                    GameData updatedGame = service.makeMove(message.getGameID(), moveCommand.getMove(), turn);
                     // service.checkGameState to see if it's checkmate or something, then broadcast a win screen
                     sessions.broadcast(message.getGameID(), null,
                             new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, updatedGame));
