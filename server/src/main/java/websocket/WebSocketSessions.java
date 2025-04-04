@@ -33,15 +33,14 @@ public class WebSocketSessions {
         return sessions.get(gameID);
     }
 
-    public void broadcast(int gameID, ServerMessage message) throws IOException {
-        for (Map.Entry<Integer, Set<Session>> entry : sessions.entrySet()) {
-            for (Session sesh : entry.getValue()) {
+    public void broadcast(int gameID, Session session, ServerMessage message) throws IOException {
+            for (Session sesh : sessions.get(gameID)) {
                 if (sesh.isOpen()) {
-                    if (!entry.getKey().equals(gameID)) {
+                    if (!sesh.equals(session)) { // identity equality I hope
                         sesh.getRemote().sendString(new Gson().toJson(message));
                     }
                 }
             }
-        }
+
     }
 }

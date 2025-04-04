@@ -20,18 +20,22 @@ public class Server {
     static private AuthDao authDao;
     static private GameDao gameDao;
 
-    private static final WebSocketHandler webSocketHandler = new WebSocketHandler();
+    private static WebSocketHandler webSocketHandler = null;
 
     public Server(UserDao ud, AuthDao ad, GameDao gd) {
         userDao = ud;
         authDao = ad;
         gameDao = gd;
+
+        webSocketHandler = new WebSocketHandler(ad, gd);
     }
 
     public Server() { // this constructor is for the tests
         userDao = new SQLUserDao();
         authDao = new SQLAuthDao();
         gameDao = new SQLGameDao();
+
+        webSocketHandler = new WebSocketHandler(authDao, gameDao);
     }
 
     public int run(int desiredPort) {

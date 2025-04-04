@@ -1,16 +1,26 @@
 package websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.authdao.AuthDao;
+import dataaccess.gamedao.GameDao;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 @WebSocket
 public class WebSocketHandler {
     WebSocketSessions sessions = new WebSocketSessions();
+    private WebSocketService service;
+
+    public WebSocketHandler(AuthDao authDao, GameDao gameDao) {
+        this.service = new WebSocketService(authDao, gameDao);
+    }
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
@@ -29,29 +39,41 @@ public class WebSocketHandler {
         UserGameCommand message = new Gson().fromJson(str, UserGameCommand.class);
         // switch case statement to determine what to do
         try {
+            String userName = service.getUsername(message.getAuthToken());
             switch (message.getCommandType()) {
                 case CONNECT:
                     sessions.addSessionToGame(message.getGameID(), session);
-                    sessions.broadcast(message.getGameID(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, ""));
+                    sessions.broadcast(message.getGameID(), session,
+                            new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                    userName + " has joined"));
                     break;
                 case LEAVE:
                     sessions.removeSessionFromGame(message.getGameID(), session);
-                    sessions.broadcast(message.getGameID(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                            "left the game"));
+                    sessions.broadcast(message.getGameID(), session,
+                            new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                    userName + "left the game"));
                     break;
                 case RESIGN:
                     // resign
                     sessions.removeSessionFromGame(message.getGameID(), session);
-                    sessions.broadcast(message.getGameID(), new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                            "resigned the game"));
+                    // service.resign(...)
+                    sessions.broadcast(message.getGameID(), session,
+                            new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                    userName + "resigned the game"));
                     break;
                 case MAKE_MOVE:
-                    message = new Gson().fromJson(str, MakeMoveCommand.class);
-                    // call repl to modify game? Service class? Access it from the sessions? WebAPI? DAO?
+                    MakeMoveCommand moveCommand = new Gson().fromJson(str, MakeMoveCommand.class);
+                    GameData updatedGame = service.makeMove(message.getGameID(), moveCommand.getMove());
+                    // service.checkGameState to see if it's checkmate or something, then broadcast a win screen
+                    sessions.broadcast(message.getGameID(), null,
+                            new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, updatedGame));
                     break;
             }
         } catch (Exception e) {
-
+            if (e.getMessage().equals("Wrong turn")) {
+                ErrorMessage errorMessage = new ErrorMessage()
+                session.getRemote().sendString(new Gson().toJson(message));
+            }
         }
 
     }

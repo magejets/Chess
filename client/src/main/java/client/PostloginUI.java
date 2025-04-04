@@ -11,6 +11,8 @@ import result.JoinResult;
 import result.ListResult;
 import result.LogoutResult;
 import ui.EscapeSequences;
+import websocket.NotificationHandler;
+import websocket.WebSocketFacade;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,9 +20,11 @@ import java.util.List;
 public class PostloginUI extends UI {
     private String userAuth;
     private GameData currentGame;
+    private WebSocketFacade wsFacade;
 
-    public PostloginUI(String serverUrl) {
+    public PostloginUI(String serverUrl, Repl notificationHandler) {
         super(serverUrl);
+        wsFacade = new WebSocketFacade(serverUrl, notificationHandler);
         userAuth = "";
     }
 
@@ -111,15 +115,17 @@ public class PostloginUI extends UI {
                 if (!(color.equals("WHITE") || color.equals("BLACK"))) {
                     return EscapeSequences.SET_TEXT_COLOR_RED + "Color must be WHITE or BLACK";
                 }
+                int gameListID = gameList.get(gameID - 1).getGameID();
                 try {
                     JoinResult result = server.join(new JoinRequest(this.getUserAuth(),
-                            gameList.get(gameID - 1).getGameID(), color));
+                            gameListID, color));
                 } catch (ResponseException e) {
                     if (e.getMessage().equals("Error: already taken")) {
                         return EscapeSequences.SET_TEXT_COLOR_RED + "Color already taken, choose another or select a different game";
                     }
                 }
                 setCurrentGame(gameList.get(gameID - 1));
+                wsFacade.connect(this.getUserAuth(), gameListID);
                 return EscapeSequences.SET_TEXT_COLOR_WHITE + "Joining as " + color + " in game " +
                         params[0] + ": " + getCurrentGame().getGameName();
             }
@@ -140,7 +146,9 @@ public class PostloginUI extends UI {
             if (gameList.size() < gameID) {
                 return EscapeSequences.SET_TEXT_COLOR_RED + "Game ID not on list";
             } else {
+                int gameListID = gameList.get(gameID - 1).getGameID();
                 setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
+                wsFacade.connect(this.getUserAuth(), gameListID);
                 return EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game " + gameID + ": "
                         + getCurrentGame().getGameName();
             }

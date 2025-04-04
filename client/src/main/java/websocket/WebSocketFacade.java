@@ -32,9 +32,7 @@ public class WebSocketFacade extends Endpoint{
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    // if I extend server message do some sort of deserialization
-                    ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    notificationHandler.notify(notification);
+                    notificationHandler.notify(message);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -42,7 +40,7 @@ public class WebSocketFacade extends Endpoint{
         }
     }
 
-    private void sendMessage(UserGameCommand command) throws IOException{
+    public void sendMessage(UserGameCommand command) throws IOException{
         this.session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 

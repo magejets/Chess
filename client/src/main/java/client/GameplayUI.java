@@ -1,19 +1,24 @@
 package client;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import exception.ResponseException;
 import model.GameData;
 import ui.EscapeSequences;
 import websocket.WebSocketFacade;
+import websocket.commands.MakeMoveCommand;
+import websocket.commands.UserGameCommand;
 
+import java.io.IOException;
 import java.util.Arrays;
+
 
 public class GameplayUI extends UI {
     private GameData currentGame;
     private String color;
     private WebSocketFacade wsFacade;
+    private String authToken;
 
     public GameplayUI(String serverUrl, Repl notificationHandler) {
         super(serverUrl);
@@ -34,6 +39,14 @@ public class GameplayUI extends UI {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     @Override
@@ -138,7 +151,39 @@ public class GameplayUI extends UI {
     }
 
     private String move(String... params) {
-        return "";
+        // error handling for illegal input
+        // turn the params into a move
+        ChessPosition start = new ChessPosition(Integer.parseInt(String.valueOf(params[0].toLowerCase().charAt(1))),
+                params[0].toLowerCase().charAt(0) - 'a' + 1);
+        ChessPosition end = new ChessPosition(Integer.parseInt(String.valueOf(params[1].toLowerCase().charAt(1))),
+                params[1].toLowerCase().charAt(0) - 'a' + 1);
+        ChessPiece.PieceType promotion = null;
+        if (params.length > 2) {
+            switch (params[2].toUpperCase()) {
+                case "QUEEN":
+                    promotion = ChessPiece.PieceType.QUEEN;
+                    break;
+                case "ROOK":
+                    promotion = ChessPiece.PieceType.ROOK;
+                    break;
+                case "BISHOP":
+                    promotion = ChessPiece.PieceType.BISHOP;
+                    break;
+                case "KNIGHT":
+                    promotion = ChessPiece.PieceType.KNIGHT;
+                    break;
+                default:
+                    return EscapeSequences.SET_TEXT_COLOR_RED + "Not a legal piece type";
+            }
+        }
+        ChessMove move = new ChessMove(start, end, promotion);
+        try {
+            wsFacade.sendMessage(new MakeMoveCommand(UserGameCommand.CommandType.MAKE_MOVE,
+                    this.getAuthToken(), this.getCurrentGame().getGameID(), move));
+        } catch (IOException e) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + e.getMessage();
+        }
+        return "Move made";
     }
 
     private String highlight(String... params) {
@@ -161,7 +206,8 @@ public class GameplayUI extends UI {
             return EscapeSequences.RESET_ALL + EscapeSequences.SET_TEXT_COLOR_BLUE
                     + "redraw" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - redraws the chess board\n"
                     + EscapeSequences.SET_TEXT_COLOR_BLUE + "leave" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - the game\n"
-                    + EscapeSequences.SET_TEXT_COLOR_BLUE + "move <column><row>" + EscapeSequences.SET_TEXT_COLOR_WHITE
+                    + EscapeSequences.SET_TEXT_COLOR_BLUE + "move <start_column><start_row> <end_column><end_row> <promotion: optional>"
+                    + EscapeSequences.SET_TEXT_COLOR_WHITE
                     + " - move a piece\n" + EscapeSequences.SET_TEXT_COLOR_BLUE
                     + "resign" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - the game\n" + EscapeSequences.SET_TEXT_COLOR_BLUE
                     + "highlight <column><row>" + EscapeSequences.SET_TEXT_COLOR_WHITE
