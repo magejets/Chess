@@ -108,7 +108,23 @@ public class WebSocketHandler {
         } catch (Exception e) {
             if (e.getMessage().equals("Wrong turn")) {
                 try {
-                    ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Wrong turn");
+                    ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: Wrong turn");
+                    session.getRemote().sendString(new Gson().toJson(errorMessage));
+                } catch (Exception ex) {
+
+                }
+            }
+            if (e.getMessage().equals("Not a valid move")) {
+                try {
+                    ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: Invalid move");
+                    session.getRemote().sendString(new Gson().toJson(errorMessage));
+                } catch (Exception ex) {
+
+                }
+            }
+            if (e.getMessage().equals("Game over")) {
+                try {
+                    ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: game already over");
                     session.getRemote().sendString(new Gson().toJson(errorMessage));
                 } catch (Exception ex) {
 

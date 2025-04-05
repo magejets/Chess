@@ -74,7 +74,13 @@ public class ChessGame {
             return null;
         }
         // remove all the illegal moves given us by the pieceMove function
-        validMoves.removeIf(move -> isInCheck(move, this.getBoard().getPiece(startPosition).getTeamColor()));
+        validMoves.removeIf(move -> {
+            try {
+                return isInCheck(move, this.getBoard().getPiece(startPosition).getTeamColor());
+            } catch (InvalidMoveException e) {
+                return false;
+            }
+        });
 
         validMoves.addAll(castling(startPosition));
 
@@ -89,51 +95,55 @@ public class ChessGame {
      * piece is a king
      */
     public Collection<ChessMove> castling(ChessPosition startPosition) {
-        ArrayList<ChessMove> castles = new ArrayList<ChessMove>();
-        // castling functionality
-        ChessPiece me = this.getBoard().getPiece(startPosition);
-        if (me.getPieceType() == ChessPiece.PieceType.KING) {
-            // king side
-            if (startPosition.getColumn() == 5) { // to avoid indexing errors
-                if (!this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "K" : "k") &&
-                    !this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "R-r" : "r-r") &&
-                    (!isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn()), null),
-                        me.getTeamColor()) &&
-                        !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 1), null),
-                                me.getTeamColor()) &&
-                        !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 2), null),
-                                me.getTeamColor()))) {
-                    if (this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 1)) == null &&
-                            this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 2)) == null) {
-                        castles.add(new ChessMove(startPosition,
-                                new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 2), null));
+        try {
+            ArrayList<ChessMove> castles = new ArrayList<ChessMove>();
+            // castling functionality
+            ChessPiece me = this.getBoard().getPiece(startPosition);
+            if (me.getPieceType() == ChessPiece.PieceType.KING) {
+                // king side
+                if (startPosition.getColumn() == 5) { // to avoid indexing errors
+                    if (!this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "K" : "k") &&
+                            !this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "R-r" : "r-r") &&
+                            (!isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn()), null),
+                                    me.getTeamColor()) &&
+                                    !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 1), null),
+                                            me.getTeamColor()) &&
+                                    !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 2), null),
+                                            me.getTeamColor()))) {
+                        if (this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 1)) == null &&
+                                this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 2)) == null) {
+                            castles.add(new ChessMove(startPosition,
+                                    new ChessPosition(startPosition.getRow(), startPosition.getColumn() + 2), null));
+                        }
+                    }
+                }
+
+                // queen side
+                if (startPosition.getColumn() == 5) { // to avoid indexing errors
+                    if (!this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "K" : "k") &&
+                            !this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "R-l" : "r-l") &&
+                            (!isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn()), null),
+                                    me.getTeamColor()) &&
+                                    !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 1), null),
+                                            me.getTeamColor()) &&
+                                    !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 2), null),
+                                            me.getTeamColor()) &&
+                                    !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 3), null),
+                                            me.getTeamColor()))) {
+                        if (this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 1)) == null &&
+                                this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 2)) == null &&
+                                this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 3)) == null) {
+                            castles.add(new ChessMove(startPosition,
+                                    new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 2), null));
+                        }
                     }
                 }
             }
 
-            // queen side
-            if (startPosition.getColumn() == 5) { // to avoid indexing errors
-                if (!this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "K" : "k") &&
-                    !this.board.piecesMoved.get(me.getTeamColor() == TeamColor.WHITE ? "R-l" : "r-l") &&
-                    (!isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn()), null),
-                        me.getTeamColor()) &&
-                        !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 1), null),
-                                me.getTeamColor()) &&
-                        !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 2), null),
-                                me.getTeamColor()) &&
-                        !isInCheck(new ChessMove(startPosition, new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 3), null),
-                                me.getTeamColor()))) {
-                    if (this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 1)) == null &&
-                            this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 2)) == null &&
-                            this.getBoard().getPiece(new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 3)) == null) {
-                        castles.add(new ChessMove(startPosition,
-                                new ChessPosition(startPosition.getRow(), startPosition.getColumn() - 2), null));
-                    }
-                }
-            }
+            return castles;
+        } catch (Exception e) {
+            return null;
         }
-
-        return castles;
     }
 
     /**
@@ -175,7 +185,7 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified move places king in check
      */
-    public boolean isInCheck(ChessMove move, TeamColor teamColor) {
+    public boolean isInCheck(ChessMove move, TeamColor teamColor) throws InvalidMoveException {
         ChessBoard tempBoard = new ChessBoard(this.board); // store the board as it is
         ChessBoard hypBoard = this.getBoard().makeMove(move); // modify the board
         boolean check = this.isInCheck(hypBoard, teamColor); // see if the king is still in check
@@ -290,12 +300,16 @@ public class ChessGame {
      */
     private boolean canSaveKing(ChessPiece piece, ChessPosition piecePos, TeamColor teamColor) {
         // see if one of his teammates can save the king
-        if (piece != null && piece.getTeamColor() == teamColor) {
-            for (ChessMove move : piece.pieceMoves(this.getBoard(), piecePos)) {
-                if (!(this.isInCheck(move, teamColor))) {
-                    return true;
+        try {
+            if (piece != null && piece.getTeamColor() == teamColor) {
+                for (ChessMove move : piece.pieceMoves(this.getBoard(), piecePos)) {
+                    if (!(this.isInCheck(move, teamColor))) {
+                        return true;
+                    }
                 }
             }
+        } catch (Exception e) {
+            // doesn't do anything because the loop is going to loop through the moves we already know are valid
         }
 
         return false;

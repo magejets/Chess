@@ -147,7 +147,7 @@ public class ChessBoard {
     }
 
     // add method make move. Won't check for legality but will be used by ChessGame.makeMove; this'll take a ChessMove
-    public ChessBoard makeMove(ChessMove move){ // add exceptions
+    public ChessBoard makeMove(ChessMove move) throws InvalidMoveException { // add exceptions
         // check that this is in fact a legal move for this piece (disregarding king danger)
         if (this.getPiece(move.getStartPosition()) != null){
             // see if it's castling. Hopefully legality was already checked!!!
@@ -170,7 +170,7 @@ public class ChessBoard {
                     this.board[move.getEndPosition().getRow() - 1][4] = ' ';
                 }
             } else if (this.getPiece(move.getStartPosition()).pieceMoves(
-            this, move.getStartPosition()).contains(move)) {
+                this, move.getStartPosition()).contains(move)) {
                 // put the piece in the end position
                 if (move.getPromotionPiece() == null) {
                     this.board[move.getEndPosition().getRow() - 1][move.getEndPosition().getColumn() - 1]
@@ -182,6 +182,8 @@ public class ChessBoard {
                 }
                 // remove the piece from the start position
                 this.board[move.getStartPosition().getRow() - 1][move.getStartPosition().getColumn() - 1] = ' ';
+            } else {
+                throw new InvalidMoveException("Not a valid move");
             }
         }
 

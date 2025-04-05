@@ -20,19 +20,36 @@ public class WebSocketService {
     public GameData makeMove(int gameID, ChessMove move, ChessGame.TeamColor turn) throws Exception{
         try {
             ChessGame game = gameDao.getGame(gameID).getGame();
-            if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == game.getTeamTurn() &&
-                turn == game.getTeamTurn()) {
-                game.setBoard(game.getBoard().makeMove(move));
-                ChessGame.TeamColor nextTurn = game.getTeamTurn() == ChessGame.TeamColor.WHITE ?
-                        ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
-                game.setTeamTurn(nextTurn);
-                gameDao.updateGame(gameID, game);
-                return gameDao.getGame(gameID);
+            if (game.getWinner() == ChessGame.Winner.NONE_YET) {
+                if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == game.getTeamTurn() &&
+                        turn == game.getTeamTurn()) {
+                    game.setBoard(game.getBoard().makeMove(move));
+                    ChessGame.TeamColor nextTurn = game.getTeamTurn() == ChessGame.TeamColor.WHITE ?
+                            ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+                    game.setTeamTurn(nextTurn);
+                    game.setWinner(this.determineWinner(game));
+                    gameDao.updateGame(gameID, game);
+                    return gameDao.getGame(gameID);
+                } else {
+                    throw new Exception("Wrong turn");
+                }
             } else {
-                throw new Exception("Wrong turn");
+                throw new Exception("Game over");
             }
         } catch (DataAccessException e) {
             throw new Exception(e.getMessage());
+        }
+    }
+
+    private ChessGame.Winner determineWinner(ChessGame game) {
+        if (game.isInStalemate(ChessGame.TeamColor.WHITE)) { // should only be necessary to put one color
+            return ChessGame.Winner.STALEMATE;
+        } else if (game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            return ChessGame.Winner.BLACK;
+        } else if (game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            return ChessGame.Winner.WHITE;
+        } else {
+            return ChessGame.Winner.NONE_YET;
         }
     }
 
