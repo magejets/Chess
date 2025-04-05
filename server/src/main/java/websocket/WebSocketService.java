@@ -5,6 +5,7 @@ import chess.ChessMove;
 import dataaccess.DataAccessException;
 import dataaccess.authdao.AuthDao;
 import dataaccess.gamedao.GameDao;
+import model.AuthData;
 import model.GameData;
 
 public class WebSocketService {
@@ -37,7 +38,12 @@ public class WebSocketService {
 
     public String getUsername(String authToken) throws Exception{
         try {
-            return authDao.getAuth(authToken).username();
+            AuthData userAuth = authDao.getAuth(authToken);
+            if (userAuth != null) {
+                return userAuth.username();
+            } else {
+                return null;
+            }
         } catch (DataAccessException e) {
             throw new Exception("Data Access Error");
         }
@@ -55,6 +61,23 @@ public class WebSocketService {
             }
         } catch (DataAccessException e) {
             throw new Exception("Bad ID");
+        }
+    }
+
+    public GameData getGame(int gameID) {
+        try {
+            return gameDao.getGame(gameID);
+        } catch (DataAccessException e) {
+            return null;
+        }
+    }
+
+    public boolean validateAuth(String authToken) {
+        try {
+            AuthData checkData = authDao.getAuth(authToken);
+            return checkData != null;
+        } catch (DataAccessException e) {
+            return false;
         }
     }
 }
