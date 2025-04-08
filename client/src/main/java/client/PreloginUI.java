@@ -5,7 +5,6 @@ import request.LoginRequest;
 import request.RegisterRequest;
 import result.LoginResult;
 import result.RegisterResult;
-import server.ServerFacade;
 import ui.EscapeSequences;
 
 import java.util.Arrays;

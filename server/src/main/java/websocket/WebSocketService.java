@@ -20,7 +20,8 @@ public class WebSocketService {
     public GameData makeMove(int gameID, ChessMove move, ChessGame.TeamColor turn) throws Exception{
         try {
             ChessGame game = gameDao.getGame(gameID).getGame();
-            if (!game.validMoves(move.getStartPosition()).contains(move)) {
+            if (game.validMoves(move.getStartPosition()) == null ||
+                    !game.validMoves(move.getStartPosition()).contains(move)) {
                 throw new Exception("Not a valid move");
             }
             if (game.getWinner() == ChessGame.Winner.NONE_YET) {

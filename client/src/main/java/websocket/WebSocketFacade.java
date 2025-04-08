@@ -2,7 +2,6 @@ package websocket;
 
 import exception.ResponseException;
 import websocket.commands.UserGameCommand;
-import websocket.messages.ServerMessage;
 
 
 import javax.websocket.*;
@@ -47,10 +46,6 @@ public class WebSocketFacade extends Endpoint{
 
     public void connect(String authToken, int gameID, String url) throws ResponseException{
         try {
-//            url = url.replace("http", "ws");
-//            URI socketURI = new URI(url + "/ws");
-//            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-//            this.session = container.connectToServer(this, socketURI);
             var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
             sendMessage(command);
         } catch (Exception e) {

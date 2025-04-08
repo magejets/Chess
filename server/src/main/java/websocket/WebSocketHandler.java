@@ -50,36 +50,7 @@ public class WebSocketHandler {
                 ChessGame.TeamColor turn;
                 switch (message.getCommandType()) {
                     case CONNECT:
-                        // check if the game exists
-                        GameData ifExists = service.getGame(message.getGameID());
-                        // validate the auth token
-
-
-                        if (ifExists != null) {
-                            sessions.addSessionToGame(message.getGameID(), session);
-
-                            String userRole;
-                            if (userName.equals(ifExists.getWhiteUsername())) {
-                                userRole = "WHITE";
-                            } else if (userName.equals(ifExists.getBlackUsername())) {
-                                userRole = "BLACK";
-                            } else {
-                                userRole = "OBSERVER";
-                            }
-
-                            // send notification to all other users
-                            sessions.broadcast(message.getGameID(), session,
-                                    new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                            userName + " has joined as " + userRole));
-                            // send load game to this user
-                            session.getRemote().sendString(new Gson().toJson(
-                                    new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME,
-                                            service.getGame(message.getGameID()))));
-                        } else {
-                            session.getRemote().sendString(new Gson().toJson(
-                                    new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "error: bad game id")));
-                        }
-
+                        connect(message, userName, session);
                         break;
                     case LEAVE:
                         turn = service.getTurn(userName, message.getGameID());
@@ -102,41 +73,7 @@ public class WebSocketHandler {
                         break;
                     case MAKE_MOVE:
                         turn = service.getTurn(userName, message.getGameID());
-                        MakeMoveCommand moveCommand = new Gson().fromJson(str, MakeMoveCommand.class);
-                        GameData updatedGame = service.makeMove(message.getGameID(), moveCommand.getMove(), turn);
-
-                        sessions.broadcast(message.getGameID(), null,
-                                new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, updatedGame));
-                        ChessMove move = moveCommand.getMove();
-                        char startRow = (char) ((move.getStartPosition().getColumn() - 1) + 'a');
-                        char endRow = (char) ((move.getEndPosition().getColumn() - 1) + 'a');
-                        String moveString = "" + startRow + move.getStartPosition().getRow() + " to " +
-                                endRow + move.getEndPosition().getRow();
-                        sessions.broadcast(message.getGameID(), session,
-                                new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                        userName + " made move " + moveString));
-                        if (updatedGame.getGame().getWinner() != ChessGame.Winner.NONE_YET) {
-                            String endGameMessage;
-                            if (updatedGame.getGame().getWinner() == ChessGame.Winner.STALEMATE) {
-                                endGameMessage = "TIE BY STALEMATE";
-                            } else {
-                                endGameMessage = updatedGame.getGame().getWinner().toString() +
-                                        " (" + userName + ") HAS WON THE GAME by Checkmate";
-                            }
-                            sessions.broadcast(message.getGameID(), null,
-                                    new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                            endGameMessage));
-                        } else {
-                            if (updatedGame.getGame().isInCheck(ChessGame.TeamColor.WHITE)) {
-                                sessions.broadcast(message.getGameID(), null,
-                                        new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                                updatedGame.getWhiteUsername() + " (WHITE) is in check"));
-                            } else if (updatedGame.getGame().isInCheck(ChessGame.TeamColor.BLACK)) {
-                                sessions.broadcast(message.getGameID(), null,
-                                        new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                                updatedGame.getBlackUsername() + " (BLACK) is in check"));
-                            }
-                        }
+                        makeMove(str, turn, session, userName);
                         break;
                 }
             }
@@ -175,5 +112,76 @@ public class WebSocketHandler {
             }
         }
 
+    }
+
+    private void makeMove(String jsonCommand, ChessGame.TeamColor turn, Session session, String userName) throws Exception{
+        UserGameCommand message = new Gson().fromJson(jsonCommand, UserGameCommand.class);
+        MakeMoveCommand moveCommand = new Gson().fromJson(jsonCommand, MakeMoveCommand.class);
+        GameData updatedGame = service.makeMove(message.getGameID(), moveCommand.getMove(), turn);
+
+        sessions.broadcast(message.getGameID(), null,
+                new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, updatedGame));
+        ChessMove move = moveCommand.getMove();
+        char startRow = (char) ((move.getStartPosition().getColumn() - 1) + 'a');
+        char endRow = (char) ((move.getEndPosition().getColumn() - 1) + 'a');
+        String moveString = "" + startRow + move.getStartPosition().getRow() + " to " +
+                endRow + move.getEndPosition().getRow();
+        sessions.broadcast(message.getGameID(), session,
+                new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                        userName + " made move " + moveString));
+        if (updatedGame.getGame().getWinner() != ChessGame.Winner.NONE_YET) {
+            String endGameMessage;
+            if (updatedGame.getGame().getWinner() == ChessGame.Winner.STALEMATE) {
+                endGameMessage = "TIE BY STALEMATE";
+            } else {
+                endGameMessage = updatedGame.getGame().getWinner().toString() +
+                        " (" + userName + ") HAS WON THE GAME by Checkmate";
+            }
+            sessions.broadcast(message.getGameID(), null,
+                    new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                            endGameMessage));
+        } else {
+            if (updatedGame.getGame().isInCheck(ChessGame.TeamColor.WHITE)) {
+                sessions.broadcast(message.getGameID(), null,
+                        new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                updatedGame.getWhiteUsername() + " (WHITE) is in check"));
+            } else if (updatedGame.getGame().isInCheck(ChessGame.TeamColor.BLACK)) {
+                sessions.broadcast(message.getGameID(), null,
+                        new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                updatedGame.getBlackUsername() + " (BLACK) is in check"));
+            }
+        }
+    }
+
+    private void connect(UserGameCommand message, String userName, Session session) throws Exception{
+        // check if the game exists
+        GameData ifExists = service.getGame(message.getGameID());
+        // validate the auth token
+
+
+        if (ifExists != null) {
+            sessions.addSessionToGame(message.getGameID(), session);
+
+            String userRole;
+            if (userName.equals(ifExists.getWhiteUsername())) {
+                userRole = "WHITE";
+            } else if (userName.equals(ifExists.getBlackUsername())) {
+                userRole = "BLACK";
+            } else {
+                userRole = "OBSERVER";
+            }
+
+            // send notification to all other users
+            sessions.broadcast(message.getGameID(), session,
+                    new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                            userName + " has joined as " + userRole));
+            // send load game to this user
+            session.getRemote().sendString(new Gson().toJson(
+                    new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME,
+                            service.getGame(message.getGameID()))));
+        } else {
+            session.getRemote().sendString(new Gson().toJson(
+                    new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "error: bad game id")));
+        }
     }
 }

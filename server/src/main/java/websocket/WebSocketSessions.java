@@ -30,10 +30,6 @@ public class WebSocketSessions {
         }
     }
 
-    public Set<Session> getSessionsForGame(int gameID) {
-        return sessions.get(gameID);
-    }
-
     public void broadcast(int gameID, Session session, ServerMessage message) throws IOException {
             for (Session sesh : sessions.get(gameID)) {
                 if (sesh.isOpen()) {
