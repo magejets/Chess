@@ -68,15 +68,13 @@ public class Repl implements NotificationHandler {
                 }
                 if (result.startsWith(EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game")) {
                     phase = "OBSERVE";
-                    //gameClient.setCurrentGame(postClient.getCurrentGame());
-                    gameClient.setColor("OBSERVE"); // observer sees from PoV white
-                    //gameClient.drawBoard(gameClient.getColor(), null);
-                   // gameClient.setAuthToken(postClient.getUserAuth());
+                    gameClient.setColor("OBSERVE");
                 }
                 if (result.equals(EscapeSequences.SET_TEXT_COLOR_WHITE + "leaving game")) {
                     phase = "LOGGED_IN";
                 }
-                if (phase.equals("GAME") || phase.equals("OBSERVE")) {
+                if (result.startsWith(EscapeSequences.SET_TEXT_COLOR_WHITE + "Joining as") ||
+                        result.startsWith(EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game")) {
                     gameClient.setCurrentGame(postClient.getCurrentGame());
                     gameClient.setAuthToken(postClient.getUserAuth());
                 }

@@ -22,6 +22,7 @@ public class GameplayUI extends UI {
     private String color;
     private WebSocketFacade wsFacade;
     private String authToken;
+    private int resignCount;
 
     public GameplayUI(String serverUrl, WebSocketFacade facade) {
         super(serverUrl);
@@ -61,10 +62,14 @@ public class GameplayUI extends UI {
             return switch (cmd) {
                 case "leave" -> leave();
                 case "redraw" -> redraw();
+                case "highlight" -> highlight(params);
                 case "quit" -> "quit";
                 default -> help();
             };
         } else {
+            if (!cmd.equals("resign")) {
+                resignCount = 0;
+            }
             return switch (cmd) {
                 case "leave" -> leave();
                 case "redraw" -> redraw();
@@ -109,10 +114,12 @@ public class GameplayUI extends UI {
                     squareBG = darkOrLight ?
                             EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
                 } else {
-                    Collection<ChessMove> possibleMoves = getCurrentGame().getGame().validMoves(highlight);
-                    squareBG = getHighlight(possibleMoves, darkOrLight, i, j);
+                    if (getCurrentGame().getGame().getBoard().getPiece(highlight) != null) {
+                        Collection<ChessMove> possibleMoves = getCurrentGame().getGame().validMoves(highlight);
+                        squareBG = getHighlight(possibleMoves, darkOrLight, i, j);
+                    }
                 }
-                ChessPiece piece = currentGame.getGame().getBoard().getPiece(new ChessPosition(i + 1, j + 1));
+                ChessPiece piece = getCurrentGame().getGame().getBoard().getPiece(new ChessPosition(i + 1, j + 1));
                 String pieceChar = getPieceChar(piece);
                 System.out.print(EscapeSequences.RESET_ALL + squareBG + " " + pieceChar + " ");
             }
@@ -185,10 +192,16 @@ public class GameplayUI extends UI {
     private String move(String... params) {
         // error handling for illegal input
         // turn the params into a move
-        ChessPosition start = new ChessPosition(Integer.parseInt(String.valueOf(params[0].toLowerCase().charAt(1))),
-                params[0].toLowerCase().charAt(0) - 'a' + 1);
-        ChessPosition end = new ChessPosition(Integer.parseInt(String.valueOf(params[1].toLowerCase().charAt(1))),
-                params[1].toLowerCase().charAt(0) - 'a' + 1);
+        ChessPosition start;
+        ChessPosition end;
+        try {
+            start = new ChessPosition(Integer.parseInt(String.valueOf(params[0].toLowerCase().charAt(1))),
+                    params[0].toLowerCase().charAt(0) - 'a' + 1);
+            end = new ChessPosition(Integer.parseInt(String.valueOf(params[1].toLowerCase().charAt(1))),
+                    params[1].toLowerCase().charAt(0) - 'a' + 1);
+        } catch (Exception e) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Bad coordinate, try again";
+        }
         ChessPiece.PieceType promotion = null;
         if (params.length > 2) {
             switch (params[2].toUpperCase()) {
@@ -220,18 +233,31 @@ public class GameplayUI extends UI {
     }
 
     private String highlight(String... params) {
-        ChessPosition start = new ChessPosition(Integer.parseInt(String.valueOf(params[0].toLowerCase().charAt(1))),
-                params[0].toLowerCase().charAt(0) - 'a' + 1);
+        ChessPosition start;
+        try {
+            start = new ChessPosition(Integer.parseInt(String.valueOf(params[0].toLowerCase().charAt(1))),
+                    params[0].toLowerCase().charAt(0) - 'a' + 1);
+        } catch (Exception e) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + "Bad coordinate, try again";
+        }
+        if (getCurrentGame().getGame().getWinner() != ChessGame.Winner.NONE_YET) {
+            start = null;
+        }
         drawBoard(this.getColor(), start);
         return "";
     }
 
     private String resign() {
-        try {
-            wsFacade.resign(this.getAuthToken(), this.getCurrentGame().getGameID());
-            return "resigning game";
-        } catch (Exception e) {
-            return EscapeSequences.SET_TEXT_COLOR_RED + e.getMessage();
+        if (resignCount == 0) {
+            resignCount = 1;
+            return EscapeSequences.SET_TEXT_COLOR_WHITE + "Type resign again to confirm: ";
+        } else {
+            try {
+                wsFacade.resign(this.getAuthToken(), this.getCurrentGame().getGameID());
+                return "resigning game";
+            } catch (Exception e) {
+                return EscapeSequences.SET_TEXT_COLOR_RED + e.getMessage();
+            }
         }
     }
 
@@ -241,6 +267,7 @@ public class GameplayUI extends UI {
             return EscapeSequences.RESET_ALL + EscapeSequences.SET_TEXT_COLOR_BLUE
                     + "redraw" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - redraws the chess board\n"
                     + EscapeSequences.SET_TEXT_COLOR_BLUE + "leave" + EscapeSequences.SET_TEXT_COLOR_WHITE + " - the game\n"
+                    + "highlight <column><row>" + EscapeSequences.SET_TEXT_COLOR_WHITE
                     + EscapeSequences.SET_TEXT_COLOR_BLUE + "help"
                     + EscapeSequences.SET_TEXT_COLOR_WHITE + " - with possible commands";
         } else {

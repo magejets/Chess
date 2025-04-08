@@ -130,12 +130,13 @@ public class WebSocketHandler {
                 new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
                         userName + " made move " + moveString));
         if (updatedGame.getGame().getWinner() != ChessGame.Winner.NONE_YET) {
-            String endGameMessage;
+            String endGameMessage = "No winner yet";
             if (updatedGame.getGame().getWinner() == ChessGame.Winner.STALEMATE) {
                 endGameMessage = "TIE BY STALEMATE";
-            } else {
-                endGameMessage = updatedGame.getGame().getWinner().toString() +
-                        " (" + userName + ") HAS WON THE GAME by Checkmate";
+            } else if (updatedGame.getGame().getWinner() == ChessGame.Winner.WHITE){
+                endGameMessage = updatedGame.getBlackUsername() + " HAS LOST THE GAME by Checkmate";
+            } else if (updatedGame.getGame().getWinner() == ChessGame.Winner.BLACK) {
+                endGameMessage = updatedGame.getWhiteUsername() + " HAS LOST THE GAME by Checkmate";
             }
             sessions.broadcast(message.getGameID(), null,
                     new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
