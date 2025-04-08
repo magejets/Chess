@@ -7,7 +7,7 @@ import org.junit.jupiter.api.*;
 import request.*;
 import result.*;
 import server.Server;
-import server.ServerFacade;
+import serverfacade.ServerFacade;
 
 import java.util.ArrayList;
 import java.util.List;

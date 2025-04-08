@@ -111,16 +111,6 @@ public class GameplayUI extends UI {
                 } else {
                     Collection<ChessMove> possibleMoves = getCurrentGame().getGame().validMoves(highlight);
                     squareBG = getHighlight(possibleMoves, darkOrLight, i, j);
-//                    for (ChessMove move : possibleMoves) {
-//                         if (move.getEndPosition().equals(new ChessPosition(i + 1, j + 1))) {
-//                            squareBG = darkOrLight ?
-//                                    EscapeSequences.SET_BG_COLOR_YELLOW : EscapeSequences.SET_BG_COLOR_GREEN;
-//                            break;
-//                        } else {
-//                            squareBG = darkOrLight ?
-//                                    EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
-//                        }
-//                    }
                 }
                 ChessPiece piece = currentGame.getGame().getBoard().getPiece(new ChessPosition(i + 1, j + 1));
                 String pieceChar = getPieceChar(piece);
