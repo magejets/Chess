@@ -110,16 +110,17 @@ public class GameplayUI extends UI {
                             EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
                 } else {
                     Collection<ChessMove> possibleMoves = getCurrentGame().getGame().validMoves(highlight);
-                    for (ChessMove move : possibleMoves) {
-                         if (move.getEndPosition().equals(new ChessPosition(i + 1, j + 1))) {
-                            squareBG = darkOrLight ?
-                                    EscapeSequences.SET_BG_COLOR_YELLOW : EscapeSequences.SET_BG_COLOR_GREEN;
-                            break;
-                        } else {
-                            squareBG = darkOrLight ?
-                                    EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
-                        }
-                    }
+                    squareBG = getHighlight(possibleMoves, darkOrLight, i, j);
+//                    for (ChessMove move : possibleMoves) {
+//                         if (move.getEndPosition().equals(new ChessPosition(i + 1, j + 1))) {
+//                            squareBG = darkOrLight ?
+//                                    EscapeSequences.SET_BG_COLOR_YELLOW : EscapeSequences.SET_BG_COLOR_GREEN;
+//                            break;
+//                        } else {
+//                            squareBG = darkOrLight ?
+//                                    EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
+//                        }
+//                    }
                 }
                 ChessPiece piece = currentGame.getGame().getBoard().getPiece(new ChessPosition(i + 1, j + 1));
                 String pieceChar = getPieceChar(piece);
@@ -139,6 +140,22 @@ public class GameplayUI extends UI {
                     EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.SET_TEXT_COLOR_WHITE +
                     "    h  g  f  e  d  c  b  a    " + EscapeSequences.RESET_ALL + "\n");
         }
+    }
+
+    private String getHighlight(Collection<ChessMove> possibleMoves, boolean darkOrLight, int i, int j) {
+        String squareBG = darkOrLight ?
+                EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
+        for (ChessMove move : possibleMoves) {
+            if (move.getEndPosition().equals(new ChessPosition(i + 1, j + 1))) {
+                squareBG = darkOrLight ?
+                        EscapeSequences.SET_BG_COLOR_YELLOW : EscapeSequences.SET_BG_COLOR_GREEN;
+                break;
+            } else {
+                squareBG = darkOrLight ?
+                        EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
+            }
+        }
+        return squareBG;
     }
 
     private static String getPieceChar(ChessPiece piece) {
