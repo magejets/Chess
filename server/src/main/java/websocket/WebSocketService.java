@@ -20,6 +20,9 @@ public class WebSocketService {
     public GameData makeMove(int gameID, ChessMove move, ChessGame.TeamColor turn) throws Exception{
         try {
             ChessGame game = gameDao.getGame(gameID).getGame();
+            if (!game.validMoves(move.getStartPosition()).contains(move)) {
+                throw new Exception("Not a valid move");
+            }
             if (game.getWinner() == ChessGame.Winner.NONE_YET) {
                 if (game.getBoard().getPiece(move.getStartPosition()).getTeamColor() == game.getTeamTurn() &&
                         turn == game.getTeamTurn()) {
@@ -96,5 +99,46 @@ public class WebSocketService {
         } catch (DataAccessException e) {
             return false;
         }
+    }
+
+    public void resign(int gameID, ChessGame.TeamColor turn) throws Exception{
+        try {
+            GameData game = gameDao.getGame(gameID);
+            if (game.getGame().getWinner() != ChessGame.Winner.NONE_YET) {
+                throw new Exception("Game over");
+            }
+            ChessGame.Winner winner;
+            winner = switch (turn) {
+                case WHITE -> ChessGame.Winner.BLACK;
+                case BLACK -> ChessGame.Winner.WHITE;
+                case null -> null;
+            };
+            if (winner == null) {
+                throw new Exception("Observer can't resign");
+            }
+            game.getGame().setWinner(winner);
+            gameDao.updateGame(gameID, game.getGame());
+        } catch (DataAccessException e) {
+            throw new Exception("Error: data access");
+        }
+
+    }
+
+    public void leave(int gameID, String userName, ChessGame.TeamColor color) throws Exception{
+        GameData game = gameDao.getGame(gameID);
+        if (color == ChessGame.TeamColor.WHITE) {
+            if (game.getWhiteUsername().equals(userName)) { // this should always be true, but just to check
+                game.setWhiteUsername(null);
+            } else {
+                throw new Exception("Error: not joined");
+            }
+        } else if (color == ChessGame.TeamColor.BLACK) {
+            if (game.getBlackUsername().equals(userName)) {
+                game.setBlackUsername(null);
+            } else {
+                throw new Exception("Error: not joined");
+            }
+        }
+        gameDao.updateGame(gameID, game);
     }
 }

@@ -22,9 +22,9 @@ public class PostloginUI extends UI {
     private GameData currentGame;
     private WebSocketFacade wsFacade;
 
-    public PostloginUI(String serverUrl, Repl notificationHandler) {
+    public PostloginUI(String serverUrl, WebSocketFacade facade) {
         super(serverUrl);
-        wsFacade = new WebSocketFacade(serverUrl, notificationHandler);
+        wsFacade = facade;
         userAuth = "";
     }
 
@@ -125,7 +125,7 @@ public class PostloginUI extends UI {
                     }
                 }
                 setCurrentGame(gameList.get(gameID - 1));
-                wsFacade.connect(this.getUserAuth(), gameListID);
+                wsFacade.connect(this.getUserAuth(), gameListID, serverUrl);
                 return EscapeSequences.SET_TEXT_COLOR_WHITE + "Joining as " + color + " in game " +
                         params[0] + ": " + getCurrentGame().getGameName();
             }
@@ -148,7 +148,7 @@ public class PostloginUI extends UI {
             } else {
                 int gameListID = gameList.get(gameID - 1).getGameID();
                 setCurrentGame(gameList.get(Integer.parseInt(params[0]) - 1));
-                wsFacade.connect(this.getUserAuth(), gameListID);
+                wsFacade.connect(this.getUserAuth(), gameListID, serverUrl);
                 return EscapeSequences.SET_TEXT_COLOR_WHITE + "Now observing game " + gameID + ": "
                         + getCurrentGame().getGameName();
             }

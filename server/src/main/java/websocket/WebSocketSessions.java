@@ -1,5 +1,6 @@
 package websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
@@ -20,7 +21,7 @@ public class WebSocketSessions {
     }
 
     public void removeSessionFromGame(int gameID, Session session) {
-        sessions.get(gameID).remove(session);
+        boolean removed = sessions.get(gameID).remove(session);
     }
 
     public void removeSession(Session session) {

@@ -4,6 +4,7 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import exception.ResponseException;
 import model.GameData;
 import ui.EscapeSequences;
 import websocket.WebSocketFacade;
@@ -12,6 +13,8 @@ import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 
 public class GameplayUI extends UI {
@@ -20,9 +23,9 @@ public class GameplayUI extends UI {
     private WebSocketFacade wsFacade;
     private String authToken;
 
-    public GameplayUI(String serverUrl, Repl notificationHandler) {
+    public GameplayUI(String serverUrl, WebSocketFacade facade) {
         super(serverUrl);
-        wsFacade = new WebSocketFacade(serverUrl, notificationHandler);
+        wsFacade = facade;
     }
 
     public GameData getCurrentGame() {
@@ -74,7 +77,7 @@ public class GameplayUI extends UI {
         }
     }
 
-    public void drawBoard(String color) {
+    public void drawBoard(String color, ChessPosition highlight) {
         int startRow = 7;
         int startCol = 0;
 
@@ -99,8 +102,25 @@ public class GameplayUI extends UI {
             // print the side label
             System.out.print("\n" + EscapeSequences.SET_BG_COLOR_BLUE + " " + EscapeSequences.SET_TEXT_COLOR_WHITE + (i + 1) + " ");
             for (int j = startCol; j != (startCol == 0 ? 8 : -1); j += (startCol == 0 ? 1 : -1)) {
-                String squareBG = ((i % 2 == 1) && (j % 2 == 0)) || ((i % 2 == 0) && (j % 2 == 1)) ?
-                        EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
+                boolean darkOrLight = ((i % 2 == 1) && (j % 2 == 0)) || ((i % 2 == 0) && (j % 2 == 1));
+                String squareBG = darkOrLight ?
+                        EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;;
+                if (highlight == null) {
+                    squareBG = darkOrLight ?
+                            EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
+                } else {
+                    Collection<ChessMove> possibleMoves = getCurrentGame().getGame().validMoves(highlight);
+                    for (ChessMove move : possibleMoves) {
+                         if (move.getEndPosition().equals(new ChessPosition(i + 1, j + 1))) {
+                            squareBG = darkOrLight ?
+                                    EscapeSequences.SET_BG_COLOR_YELLOW : EscapeSequences.SET_BG_COLOR_GREEN;
+                            break;
+                        } else {
+                            squareBG = darkOrLight ?
+                                    EscapeSequences.SET_BG_COLOR_LIGHT_GREY : EscapeSequences.SET_BG_COLOR_DARK_GREEN;
+                        }
+                    }
+                }
                 ChessPiece piece = currentGame.getGame().getBoard().getPiece(new ChessPosition(i + 1, j + 1));
                 String pieceChar = getPieceChar(piece);
                 System.out.print(EscapeSequences.RESET_ALL + squareBG + " " + pieceChar + " ");
@@ -142,11 +162,16 @@ public class GameplayUI extends UI {
     }
 
     private String leave() {
-        return EscapeSequences.SET_TEXT_COLOR_WHITE + "leaving game"; // dummy function for now
+        try {
+            wsFacade.leave(this.getAuthToken(), this.getCurrentGame().getGameID());
+            return EscapeSequences.SET_TEXT_COLOR_WHITE + "leaving game";
+        } catch (ResponseException e) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + e.getMessage();
+        }
     }
 
     private String redraw() {
-        this.drawBoard(this.getColor());
+        this.drawBoard(this.getColor(), null);
         return "";
     }
 
@@ -188,11 +213,19 @@ public class GameplayUI extends UI {
     }
 
     private String highlight(String... params) {
+        ChessPosition start = new ChessPosition(Integer.parseInt(String.valueOf(params[0].toLowerCase().charAt(1))),
+                params[0].toLowerCase().charAt(0) - 'a' + 1);
+        drawBoard(this.getColor(), start);
         return "";
     }
 
     private String resign() {
-        return "";
+        try {
+            wsFacade.resign(this.getAuthToken(), this.getCurrentGame().getGameID());
+            return "resigning game";
+        } catch (Exception e) {
+            return EscapeSequences.SET_TEXT_COLOR_RED + e.getMessage();
+        }
     }
 
     @Override

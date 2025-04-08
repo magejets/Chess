@@ -1,7 +1,7 @@
 package client;
 
 import exception.ResponseException;
-import server.ServerFacade;
+import server.ServerFacade; // should the server facade be in shared?
 
 public abstract class UI {
     protected String serverUrl;

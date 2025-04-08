@@ -42,6 +42,10 @@ public class MemoryGameDao implements GameDao{
         return 0; // dummy function
     }
 
+    public int updateGame(int gameID, GameData game) throws DataAccessException {
+        return 0; // another dummy function
+    }
+
     public void clear() throws DataAccessException {
         gameList.clear();
         lastIndex = 1;

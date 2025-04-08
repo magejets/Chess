@@ -47,6 +47,7 @@ public class WebSocketHandler {
                 session.getRemote().sendString(new Gson().toJson(
                         new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "error: unauthorized")));
             } else {
+                ChessGame.TeamColor turn;
                 switch (message.getCommandType()) {
                     case CONNECT:
                         // check if the game exists
@@ -57,10 +58,19 @@ public class WebSocketHandler {
                         if (ifExists != null) {
                             sessions.addSessionToGame(message.getGameID(), session);
 
+                            String userRole;
+                            if (userName.equals(ifExists.getWhiteUsername())) {
+                                userRole = "WHITE";
+                            } else if (userName.equals(ifExists.getBlackUsername())) {
+                                userRole = "BLACK";
+                            } else {
+                                userRole = "OBSERVER";
+                            }
+
                             // send notification to all other users
                             sessions.broadcast(message.getGameID(), session,
                                     new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                            userName + " has joined"));
+                                            userName + " has joined as " + userRole));
                             // send load game to this user
                             session.getRemote().sendString(new Gson().toJson(
                                     new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME,
@@ -72,25 +82,28 @@ public class WebSocketHandler {
 
                         break;
                     case LEAVE:
+                        turn = service.getTurn(userName, message.getGameID());
                         sessions.removeSessionFromGame(message.getGameID(), session);
+                        service.leave(message.getGameID(), userName, turn);
                         sessions.broadcast(message.getGameID(), session,
                                 new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                        userName + "left the game"));
+                                        userName + " left the game"));
                         break;
                     case RESIGN:
-                        ChessGame.TeamColor turn = service.getTurn(userName, message.getGameID());
                         // resign
+                        turn = service.getTurn(userName, message.getGameID());
                         sessions.removeSessionFromGame(message.getGameID(), session);
-                        // service.resign(...)
+                        service.resign(message.getGameID(), turn);
                         sessions.broadcast(message.getGameID(), session,
                                 new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
-                                        userName + "resigned the game"));
+                                        userName + " (" + turn.toString() + ") resigned the game"));
+                        session.getRemote().sendString(new Gson().toJson(
+                                new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION, "You resigned the game")));
                         break;
                     case MAKE_MOVE:
                         turn = service.getTurn(userName, message.getGameID());
                         MakeMoveCommand moveCommand = new Gson().fromJson(str, MakeMoveCommand.class);
                         GameData updatedGame = service.makeMove(message.getGameID(), moveCommand.getMove(), turn);
-                        // service.checkGameState to see if it's checkmate or something, then broadcast a win screen
 
                         sessions.broadcast(message.getGameID(), null,
                                 new LoadGameMessage(ServerMessage.ServerMessageType.LOAD_GAME, updatedGame));
@@ -102,6 +115,28 @@ public class WebSocketHandler {
                         sessions.broadcast(message.getGameID(), session,
                                 new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
                                         userName + " made move " + moveString));
+                        if (updatedGame.getGame().getWinner() != ChessGame.Winner.NONE_YET) {
+                            String endGameMessage;
+                            if (updatedGame.getGame().getWinner() == ChessGame.Winner.STALEMATE) {
+                                endGameMessage = "TIE BY STALEMATE";
+                            } else {
+                                endGameMessage = updatedGame.getGame().getWinner().toString() +
+                                        " (" + userName + ") HAS WON THE GAME by Checkmate";
+                            }
+                            sessions.broadcast(message.getGameID(), null,
+                                    new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                            endGameMessage));
+                        } else {
+                            if (updatedGame.getGame().isInCheck(ChessGame.TeamColor.WHITE)) {
+                                sessions.broadcast(message.getGameID(), null,
+                                        new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                                updatedGame.getWhiteUsername() + " (WHITE) is in check"));
+                            } else if (updatedGame.getGame().isInCheck(ChessGame.TeamColor.BLACK)) {
+                                sessions.broadcast(message.getGameID(), null,
+                                        new NotificationMessage(ServerMessage.ServerMessageType.NOTIFICATION,
+                                                updatedGame.getBlackUsername() + " (BLACK) is in check"));
+                            }
+                        }
                         break;
                 }
             }
@@ -125,6 +160,14 @@ public class WebSocketHandler {
             if (e.getMessage().equals("Game over")) {
                 try {
                     ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: game already over");
+                    session.getRemote().sendString(new Gson().toJson(errorMessage));
+                } catch (Exception ex) {
+
+                }
+            }
+            if (e.getMessage().equals("Observer can't resign")) {
+                try {
+                    ErrorMessage errorMessage = new ErrorMessage(ServerMessage.ServerMessageType.ERROR, "Error: observer can't resign");
                     session.getRemote().sendString(new Gson().toJson(errorMessage));
                 } catch (Exception ex) {
 

@@ -105,6 +105,21 @@ public class SQLGameDao implements GameDao{
         }
     }
 
+    public int updateGame(int gameID, GameData game) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement;
+            statement = "UPDATE game SET whiteUsername = ?, blackUsername = ? WHERE id = ?;";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, game.getWhiteUsername());
+                ps.setString(2, game.getBlackUsername());
+                ps.setInt(3, gameID);
+                return ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "TRUNCATE game";

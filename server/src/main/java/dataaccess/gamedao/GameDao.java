@@ -12,5 +12,6 @@ public interface GameDao {
     public GameData getGame(Integer gameID) throws DataAccessException;
     public int updateGame(int gameID, String playerColor, String username) throws DataAccessException;
     public int updateGame(int gameID, ChessGame game) throws DataAccessException;
+    public int updateGame(int gameID, GameData game) throws DataAccessException;
     public void clear() throws DataAccessException;
 }
